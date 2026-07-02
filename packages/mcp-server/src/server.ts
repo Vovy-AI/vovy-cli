@@ -1,5 +1,5 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { getAllSkills } from "@vovy/skills";
+import { getAllSkills } from "@vovy-ai/skills";
 import { z } from "zod";
 import { analyzeProject } from "./tools/analyze-project.js";
 
@@ -8,7 +8,7 @@ export const SERVER_VERSION = "0.1.0";
 
 /**
  * Builds the Vovy MCP server: one deterministic tool (`analyze_project`, no LLM calls),
- * plus every skill in @vovy/skills exposed twice more — as an MCP prompt and as an MCP
+ * plus every skill in @vovy-ai/skills exposed twice more — as an MCP prompt and as an MCP
  * resource (`skill://<id>`) — so hosts with good MCP-prompt/resource UX get the same
  * content Vovy's CLI installer already wrote directly into the host's native skill
  * directory. This is a redundant, secondary discovery path; nothing depends on it working.

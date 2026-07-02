@@ -46,7 +46,7 @@ Vovy ships three skills in v0.1:
 
 **Is my code sent to Vovy's servers?** There are no Vovy servers. `vovy install` only writes local files on your own machine.
 
-**What does this actually change on my machine?** A few markdown skill files inside your coding tool's own config directory (e.g. `~/.claude/skills/`), plus one line registering `@vovy/mcp-server` in that tool's MCP config. Run `vovy install --dry-run` first to see exactly what would be written before anything happens, and `vovy uninstall` any time to remove it all.
+**What does this actually change on my machine?** A few markdown skill files inside your coding tool's own config directory (e.g. `~/.claude/skills/`), plus one line registering `@vovy-ai/mcp-server` in that tool's MCP config. Run `vovy install --dry-run` first to see exactly what would be written before anything happens, and `vovy uninstall` any time to remove it all.
 
 ## How it works (for the curious)
 

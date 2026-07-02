@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { codexAdapter, removeCodexMcpEntry } from "./codex.js";
 
-const ENTRY = { id: "vovy", command: "npx", args: ["-y", "@vovy/mcp-server"] };
+const ENTRY = { id: "vovy", command: "npx", args: ["-y", "@vovy-ai/mcp-server"] };
 
 describe("codexAdapter.mergeMcpConfig (TOML)", () => {
   it("appends a mcp_servers table to an empty file", () => {
     const result = codexAdapter.mergeMcpConfig(undefined, ENTRY);
     expect(result).toContain("[mcp_servers.vovy]");
     expect(result).toContain('command = "npx"');
-    expect(result).toContain('args = ["-y", "@vovy/mcp-server"]');
+    expect(result).toContain('args = ["-y", "@vovy-ai/mcp-server"]');
   });
 
   it("leaves an existing table untouched rather than duplicating it (idempotent)", () => {
@@ -23,6 +23,23 @@ describe("codexAdapter.mergeMcpConfig (TOML)", () => {
     const result = codexAdapter.mergeMcpConfig(existing, ENTRY);
     expect(result).toContain('[some_other_section]\nfoo = "bar"');
     expect(result).toContain("[mcp_servers.vovy]");
+  });
+
+  it("updates an existing table in place when the args actually change, rather than leaving a stale entry forever", () => {
+    const stale = '[mcp_servers.vovy]\ncommand = "npx"\nargs = ["-y", "@old-scope/mcp-server"]\n';
+    const result = codexAdapter.mergeMcpConfig(stale, ENTRY);
+    expect(result).not.toContain("@old-scope/mcp-server");
+    expect(result).toContain('args = ["-y", "@vovy-ai/mcp-server"]');
+    expect(result.match(/\[mcp_servers\.vovy\]/g)).toHaveLength(1);
+  });
+
+  it("preserves sibling tables when updating an existing entry in place", () => {
+    const stale =
+      '[mcp_servers.other]\ncommand = "x"\nargs = []\n\n[mcp_servers.vovy]\ncommand = "npx"\nargs = ["-y", "@old-scope/mcp-server"]\n';
+    const result = codexAdapter.mergeMcpConfig(stale, ENTRY);
+    expect(result).toContain("[mcp_servers.other]");
+    expect(result).toContain('args = ["-y", "@vovy-ai/mcp-server"]');
+    expect(result).not.toContain("@old-scope/mcp-server");
   });
 });
 

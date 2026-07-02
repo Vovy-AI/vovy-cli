@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { mergeJsonMcpConfig, removeJsonMcpEntry } from "./json-mcp-config.js";
 
-const ENTRY = { id: "vovy", command: "npx", args: ["-y", "@vovy/mcp-server"] };
+const ENTRY = { id: "vovy", command: "npx", args: ["-y", "@vovy-ai/mcp-server"] };
 
 describe("mergeJsonMcpConfig", () => {
   it("creates a fresh config when none exists", () => {
     const result = JSON.parse(mergeJsonMcpConfig(undefined, ENTRY));
-    expect(result.mcpServers.vovy).toEqual({ command: "npx", args: ["-y", "@vovy/mcp-server"] });
+    expect(result.mcpServers.vovy).toEqual({ command: "npx", args: ["-y", "@vovy-ai/mcp-server"] });
   });
 
   it("preserves other mcpServers entries and other top-level keys untouched", () => {

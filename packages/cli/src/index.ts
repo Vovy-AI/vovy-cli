@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { parseArgs } from "node:util";
-import { ADAPTERS, type SkillScope } from "@vovy/host-detect";
+import { ADAPTERS, type SkillScope } from "@vovy-ai/host-detect";
 import { runDoctor } from "./commands/doctor.js";
 import { runInstall } from "./commands/install.js";
 import { runUninstall } from "./commands/uninstall.js";

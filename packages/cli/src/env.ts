@@ -1,5 +1,5 @@
 import { homedir } from "node:os";
-import type { DetectEnv } from "@vovy/host-detect";
+import type { DetectEnv } from "@vovy-ai/host-detect";
 
 /** The real machine's environment. Commands take a `DetectEnv` parameter so tests can
  * inject a throwaway one instead — nothing in this package reads `os.homedir()` directly

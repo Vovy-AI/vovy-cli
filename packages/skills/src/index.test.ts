@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { SKILL_MANIFEST, getAllSkills, getSkill } from "./index.js";
 
-describe("@vovy/skills", () => {
+describe("@vovy-ai/skills", () => {
   it("loads every skill in the manifest without throwing", () => {
     const skills = getAllSkills();
     expect(skills).toHaveLength(SKILL_MANIFEST.length);

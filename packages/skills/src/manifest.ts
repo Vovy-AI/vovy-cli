@@ -3,7 +3,7 @@ import type { SkillMeta } from "./types.js";
 /**
  * The full set of skills Vovy ships in v0.1. This is the single source of truth: both
  * `vovy install` (writes SKILL.md into each host's native skill directory) and
- * `@vovy/mcp-server` (serves the same content as MCP prompts/resources) read from here.
+ * `@vovy-ai/mcp-server` (serves the same content as MCP prompts/resources) read from here.
  */
 export const SKILL_MANIFEST: SkillMeta[] = [
   {

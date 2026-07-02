@@ -1,5 +1,5 @@
-import type { DetectEnv, HostAdapter, SkillScope } from "@vovy/host-detect";
-import { getAllSkills } from "@vovy/skills";
+import type { DetectEnv, HostAdapter, SkillScope } from "@vovy-ai/host-detect";
+import { getAllSkills } from "@vovy-ai/skills";
 import { runInstall } from "./install.js";
 
 export type DoctorStatus = "ok" | "missing" | "stale";

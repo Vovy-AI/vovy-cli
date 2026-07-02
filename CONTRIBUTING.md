@@ -27,7 +27,7 @@ Everything is orchestrated by Turborepo, so `pnpm build` etc. run per-package wi
 
 ## Adding a new host adapter
 
-This is the single highest-value contribution to Vovy, and the main reason `@vovy/host-detect` is its own package. To add support for a new AI coding tool:
+This is the single highest-value contribution to Vovy, and the main reason `@vovy-ai/host-detect` is its own package. To add support for a new AI coding tool:
 
 1. Read `packages/host-detect/src/types.ts` — every adapter implements the `HostAdapter` interface: `detect()`, `skillFilePath()`, `mcpConfigPath()`, `mergeMcpConfig()`.
 2. Look at `packages/host-detect/src/adapters/claude-code.ts` as the reference implementation, and `cursor.ts`/`cline.ts`/`windsurf.ts` as examples of best-effort adapters that are honest about what's unconfirmed.
@@ -40,17 +40,17 @@ If you're fixing or confirming an existing best-effort adapter (see `docs/host-s
 
 ## Editing a skill
 
-Skill content lives in `packages/skills/skills/<id>/SKILL.md`. The `description` field in the YAML frontmatter is what the host model reads to decide whether to trigger the skill — per Anthropic's own Agent Skills guidance, models tend to under-trigger skills, so keep descriptions assertive and keyword-dense rather than vague. Run `pnpm --filter @vovy/skills test` after editing to make sure frontmatter still parses.
+Skill content lives in `packages/skills/skills/<id>/SKILL.md`. The `description` field in the YAML frontmatter is what the host model reads to decide whether to trigger the skill — per Anthropic's own Agent Skills guidance, models tend to under-trigger skills, so keep descriptions assertive and keyword-dense rather than vague. Run `pnpm --filter @vovy-ai/skills test` after editing to make sure frontmatter still parses.
 
 ## Testing conventions
 
-- **Never touch the real `$HOME` or `cwd` in a test.** `@vovy/host-detect` and `vovy` both take an explicit `DetectEnv` parameter everywhere specifically so tests can redirect it — use the `tmpEnv()` helper (`src/test-utils.ts` in each package) which creates a throwaway directory under `os.tmpdir()` and cleans it up after the test.
+- **Never touch the real `$HOME` or `cwd` in a test.** `@vovy-ai/host-detect` and `vovy` both take an explicit `DetectEnv` parameter everywhere specifically so tests can redirect it — use the `tmpEnv()` helper (`src/test-utils.ts` in each package) which creates a throwaway directory under `os.tmpdir()` and cleans it up after the test.
 - Prefer testing through the public exported functions (`runInstall`, `runDoctor`, `runUninstall`, adapter methods) over reaching into private internals.
 
 ## Pull requests
 
 - Run `pnpm ci` before opening a PR.
-- Add a changeset (`pnpm changeset`) for any change to a published package (`@vovy/*` or `vovy`) — this drives the changelog and version bump on release.
+- Add a changeset (`pnpm changeset`) for any change to a published package (`@vovy-ai/*` or `vovy`) — this drives the changelog and version bump on release.
 - Keep PRs scoped to one adapter/skill/fix where possible; it makes review faster and the changeset more meaningful.
 
 ## Code of conduct

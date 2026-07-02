@@ -1,5 +1,5 @@
 {
-  "name": "@vovy/skills",
+  "name": "@vovy-ai/skills",
   "version": "0.1.0",
   "description": "Vovy's skill content — SKILL.md files and a typed manifest, the single source of truth consumed by the CLI installer and the MCP server.",
   "license": "MIT",

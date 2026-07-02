@@ -34,12 +34,19 @@ export const codexAdapter: HostAdapter = {
   mergeMcpConfig(existing: string | undefined, entry: McpServerEntry): string {
     const tableHeader = `[mcp_servers.${entry.id}]`;
     const base = existing ?? "";
-    if (base.includes(tableHeader)) {
-      // Already registered — leave as-is rather than risk corrupting a hand-edited TOML file.
-      return base;
-    }
     const argsToml = entry.args.map((a) => JSON.stringify(a)).join(", ");
     const block = `${tableHeader}\ncommand = ${JSON.stringify(entry.command)}\nargs = [${argsToml}]\n`;
+
+    const found = findTableBlock(base, tableHeader);
+    if (found) {
+      // Table already exists — replace it in place only if its content actually differs,
+      // so re-running install after e.g. a package rename fixes a stale command/args
+      // instead of silently leaving the old entry behind forever.
+      const currentBlock = base.slice(found.start, found.end);
+      if (currentBlock.trim() === block.trim()) return base;
+      return base.slice(0, found.start) + block + base.slice(found.end);
+    }
+
     const separator =
       base.length > 0 && !base.endsWith("\n\n") ? (base.endsWith("\n") ? "\n" : "\n\n") : "";
     return `${base}${separator}${block}`;
@@ -47,22 +54,32 @@ export const codexAdapter: HostAdapter = {
 };
 
 /**
+ * Finds a `[table.header]` block's span in a TOML string: from the header up to, but not
+ * including, the next `[` table header or end of file. Shared by `mergeMcpConfig` (to
+ * replace an existing block in place) and `removeCodexMcpEntry` (to delete one) so both
+ * agree on exactly what "this table's content" means.
+ */
+function findTableBlock(text: string, header: string): { start: number; end: number } | null {
+  const start = text.indexOf(header);
+  if (start === -1) return null;
+  const rest = text.slice(start + header.length);
+  const nextHeaderMatch = rest.match(/\n\[/);
+  const end =
+    nextHeaderMatch?.index != null
+      ? start + header.length + nextHeaderMatch.index + 1
+      : text.length;
+  return { start, end };
+}
+
+/**
  * Removes a `[mcp_servers.<id>]` table block from a Codex `config.toml`. Deliberately
- * conservative: only strips the block this adapter would itself have written (from its
- * header up to, but not including, the next `[` table header or end of file), leaving
+ * conservative: only strips the block this adapter would itself have written, leaving
  * everything else in a hand-edited TOML file untouched. Returns `null` if the table isn't
  * present, so the caller can skip writing.
  */
 export function removeCodexMcpEntry(existing: string | undefined, id: string): string | null {
   if (!existing) return null;
-  const header = `[mcp_servers.${id}]`;
-  const start = existing.indexOf(header);
-  if (start === -1) return null;
-  const rest = existing.slice(start + header.length);
-  const nextHeaderMatch = rest.match(/\n\[/);
-  const end =
-    nextHeaderMatch?.index != null
-      ? start + header.length + nextHeaderMatch.index + 1
-      : existing.length;
-  return existing.slice(0, start) + existing.slice(end);
+  const found = findTableBlock(existing, `[mcp_servers.${id}]`);
+  if (!found) return null;
+  return existing.slice(0, found.start) + existing.slice(found.end);
 }

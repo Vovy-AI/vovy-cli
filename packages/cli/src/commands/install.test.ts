@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { SKILL_MANIFEST } from "@vovy/skills";
+import { SKILL_MANIFEST } from "@vovy-ai/skills";
 import { afterEach, describe, expect, it } from "vitest";
 import { tmpEnv } from "../test-utils.js";
 import { runDoctor } from "./doctor.js";
@@ -29,7 +29,10 @@ describe("install / doctor / uninstall lifecycle", () => {
     }
     expect(report?.mcpResult?.action).toBe("created");
     const mcpConfig = JSON.parse(readFileSync(report?.mcpResult?.path ?? "", "utf8"));
-    expect(mcpConfig.mcpServers.vovy).toEqual({ command: "npx", args: ["-y", "@vovy/mcp-server"] });
+    expect(mcpConfig.mcpServers.vovy).toEqual({
+      command: "npx",
+      args: ["-y", "@vovy-ai/mcp-server"],
+    });
 
     const doctorReports = runDoctor(t.env, hosts, "user");
     expect(doctorReports).toHaveLength(1);

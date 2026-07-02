@@ -29,10 +29,10 @@ importers:
 
   packages/cli:
     dependencies:
-      '@vovy/host-detect':
+      '@vovy-ai/host-detect':
         specifier: workspace:*
         version: link:../host-detect
-      '@vovy/skills':
+      '@vovy-ai/skills':
         specifier: workspace:*
         version: link:../skills
     devDependencies:
@@ -63,7 +63,7 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: ^1.12.0
         version: 1.29.0(zod@3.25.76)
-      '@vovy/skills':
+      '@vovy-ai/skills':
         specifier: workspace:*
         version: link:../skills
       zod:

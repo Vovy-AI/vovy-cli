@@ -1,5 +1,5 @@
 {
-  "name": "@vovy/mcp-server",
+  "name": "@vovy-ai/mcp-server",
   "version": "0.1.0",
   "description": "Vovy's MCP server — deterministic project-analysis tools plus the same skill content served as MCP prompts/resources.",
   "license": "MIT",
@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
-    "@vovy/skills": "workspace:*",
+    "@vovy-ai/skills": "workspace:*",
     "zod": "^3.24.1"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-import { ADAPTERS, type DetectEnv, type HostAdapter, getAdapter } from "@vovy/host-detect";
+import { ADAPTERS, type DetectEnv, type HostAdapter, getAdapter } from "@vovy-ai/host-detect";
 
 /** Resolve which host adapters a command should act on: an explicit `--host` list wins,
  * otherwise fall back to whichever hosts `detect()` finds installed on this machine. */

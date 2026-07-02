@@ -4,7 +4,7 @@ import { claudeCodeAdapter } from "./adapters/claude-code.js";
 import { tmpEnv } from "./test-utils.js";
 import { writeMcpConfig, writeSkillFile } from "./write.js";
 
-const ENTRY = { id: "vovy", command: "npx", args: ["-y", "@vovy/mcp-server"] };
+const ENTRY = { id: "vovy", command: "npx", args: ["-y", "@vovy-ai/mcp-server"] };
 
 describe("writeSkillFile / writeMcpConfig", () => {
   let cleanup: () => void;

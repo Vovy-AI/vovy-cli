@@ -5,8 +5,8 @@ import {
   type WriteResult,
   writeMcpConfig,
   writeSkillFile,
-} from "@vovy/host-detect";
-import { getAllSkills } from "@vovy/skills";
+} from "@vovy-ai/host-detect";
+import { getAllSkills } from "@vovy-ai/skills";
 import { resolveTargets } from "../targets.js";
 
 export interface InstallOptions {
@@ -22,11 +22,11 @@ export interface InstallReport {
   mcpResult: WriteResult | null;
 }
 
-const VOVY_MCP_ENTRY = { id: "vovy", command: "npx", args: ["-y", "@vovy/mcp-server"] };
+const VOVY_MCP_ENTRY = { id: "vovy", command: "npx", args: ["-y", "@vovy-ai/mcp-server"] };
 
-/** Writes every skill in @vovy/skills into each target host's native skill directory
+/** Writes every skill in @vovy-ai/skills into each target host's native skill directory
  * (the primary, zero-protocol-dependency delivery mechanism), plus registers
- * @vovy/mcp-server in the host's MCP config where supported (secondary, redundant path). */
+ * @vovy-ai/mcp-server in the host's MCP config where supported (secondary, redundant path). */
 export function runInstall(opts: InstallOptions): InstallReport[] {
   const scope = opts.scope ?? "user";
   const targets = resolveTargets(opts.env, opts.hosts);

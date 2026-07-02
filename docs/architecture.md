@@ -15,21 +15,21 @@ MCP has a `sampling/createMessage` primitive that, on paper, does exactly what w
 
 Every target host independently converged on a markdown-file convention its own agent loop reads for free: `SKILL.md` for Claude Code and Codex CLI (the shared open "Agent Skills" format), `.mdc` rules for Cursor, flat rule files for Cline and Windsurf. `vovy install` writes Vovy's skills directly into whichever of these directories the detected host uses. This is the **primary** delivery mechanism — zero protocol dependency, works today, on every host, using a feature each vendor already built and maintains for their own reasons.
 
-The same content is *also* served by `@vovy/mcp-server` as MCP `prompts` and `resources` (`skill://<id>`) — both still-stable, non-deprecated MCP primitives — as a **secondary**, redundant path for any host with good MCP-prompt discovery UX. Nothing depends on this path working.
+The same content is *also* served by `@vovy-ai/mcp-server` as MCP `prompts` and `resources` (`skill://<id>`) — both still-stable, non-deprecated MCP primitives — as a **secondary**, redundant path for any host with good MCP-prompt discovery UX. Nothing depends on this path working.
 
-`@vovy/mcp-server` additionally exposes one deterministic MCP **tool**, `analyze_project`: plain static analysis (read `package.json`, walk the file tree, detect framework/package-manager/test-runner signals, flag a few concrete footguns like an untracked `.env`). No network calls, no LLM, no guessing. The `project-skill-drafter` skill instructs the host's own model to turn that tool's output into a tailored project skill file — this is how "auto-generate a project-specific skill from codebase analysis" works without Vovy running any inference: Vovy supplies facts, the founder's own paid model supplies judgment.
+`@vovy-ai/mcp-server` additionally exposes one deterministic MCP **tool**, `analyze_project`: plain static analysis (read `package.json`, walk the file tree, detect framework/package-manager/test-runner signals, flag a few concrete footguns like an untracked `.env`). No network calls, no LLM, no guessing. The `project-skill-drafter` skill instructs the host's own model to turn that tool's output into a tailored project skill file — this is how "auto-generate a project-specific skill from codebase analysis" works without Vovy running any inference: Vovy supplies facts, the founder's own paid model supplies judgment.
 
 ## Package layout
 
 ```
 packages/
-├── skills/          @vovy/skills       — SKILL.md content + typed manifest (single source of truth)
-├── host-detect/     @vovy/host-detect  — HostAdapter interface + per-host detect/write logic
-├── mcp-server/       @vovy/mcp-server   — MCP server (stdio); serves analyze_project + prompts/resources
+├── skills/          @vovy-ai/skills       — SKILL.md content + typed manifest (single source of truth)
+├── host-detect/     @vovy-ai/host-detect  — HostAdapter interface + per-host detect/write logic
+├── mcp-server/       @vovy-ai/mcp-server   — MCP server (stdio); serves analyze_project + prompts/resources
 └── cli/               vovy               — `npx vovy install|doctor|uninstall`
 ```
 
-`@vovy/skills` has zero runtime dependencies and is the actual product content; both `cli` and `mcp-server` import it so the two delivery paths can never drift apart. `@vovy/host-detect` isolates the highest-blast-radius code — writing into other tools' config directories inside `$HOME` — behind a small `HostAdapter` interface, and is the main extension point for adding new hosts (see [`host-support-matrix.md`](host-support-matrix.md) and [`../CONTRIBUTING.md`](../CONTRIBUTING.md)).
+`@vovy-ai/skills` has zero runtime dependencies and is the actual product content; both `cli` and `mcp-server` import it so the two delivery paths can never drift apart. `@vovy-ai/host-detect` isolates the highest-blast-radius code — writing into other tools' config directories inside `$HOME` — behind a small `HostAdapter` interface, and is the main extension point for adding new hosts (see [`host-support-matrix.md`](host-support-matrix.md) and [`../CONTRIBUTING.md`](../CONTRIBUTING.md)).
 
 ## What v0.1 explicitly does not do
 

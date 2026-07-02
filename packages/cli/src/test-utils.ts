@@ -1,7 +1,7 @@
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { DetectEnv } from "@vovy/host-detect";
+import type { DetectEnv } from "@vovy-ai/host-detect";
 
 /** A fresh, throwaway `DetectEnv` under `os.tmpdir()` — every CLI test must use this
  * instead of `realEnv()`, since these tests exercise the actual installer. */

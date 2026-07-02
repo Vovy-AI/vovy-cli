@@ -5,8 +5,8 @@ import {
   type SkillScope,
   removeCodexMcpEntry,
   removeJsonMcpEntry,
-} from "@vovy/host-detect";
-import { SKILL_MANIFEST } from "@vovy/skills";
+} from "@vovy-ai/host-detect";
+import { SKILL_MANIFEST } from "@vovy-ai/skills";
 import { resolveTargets } from "../targets.js";
 
 export interface UninstallOptions {

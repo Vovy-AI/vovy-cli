@@ -15,8 +15,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@vovy/host-detect": "workspace:*",
-    "@vovy/skills": "workspace:*"
+    "@vovy-ai/host-detect": "workspace:*",
+    "@vovy-ai/skills": "workspace:*"
   },
   "devDependencies": {
     "tsup": "^8.3.5",
