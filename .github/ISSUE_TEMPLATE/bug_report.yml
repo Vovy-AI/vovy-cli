@@ -1,0 +1,59 @@
+name: Bug report
+description: Something didn't work the way it should
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting this. Vovy touches several different host tools and operating
+        systems, so the fields below (especially host + OS + version) are usually the first
+        thing needed to reproduce a bug — please fill them in even if they seem obvious.
+
+  - type: dropdown
+    id: host
+    attributes:
+      label: Host tool
+      options:
+        - Claude Code
+        - Codex CLI
+        - Cursor
+        - Cline
+        - Windsurf
+        - Not sure / other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - macOS
+        - Linux
+        - Windows
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Vovy version
+      description: Output of `vovy --help` (shows the version) or your package.json/lockfile
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you run, what did you expect, what actually happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: doctor-output
+    attributes:
+      label: `vovy doctor` output
+      description: If relevant, paste the output of `vovy doctor` here.
+      render: shell

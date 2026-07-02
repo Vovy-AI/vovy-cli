@@ -1,0 +1,2 @@
+# minimal fixture lockfile, only used so analyzeProject() detects packageManager: "pnpm"
+lockfileVersion: '9.0'

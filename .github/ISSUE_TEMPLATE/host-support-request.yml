@@ -1,0 +1,31 @@
+name: Host support request
+description: Ask for a new AI coding tool to be supported, or report a wrong path for an existing one
+labels: ["host-support"]
+body:
+  - type: input
+    id: tool
+    attributes:
+      label: Tool name
+      placeholder: e.g. Zed, Aider, a Windsurf fork
+    validations:
+      required: true
+
+  - type: textarea
+    id: skill-convention
+    attributes:
+      label: How does this tool load custom instructions/skills?
+      description: A link to the tool's own docs for its skill/rules-file convention (path, format, frontmatter requirements) is the single most useful thing you can include here.
+    validations:
+      required: true
+
+  - type: textarea
+    id: mcp-support
+    attributes:
+      label: Does this tool support MCP servers? If so, what's the config file/format?
+      description: Link to docs if you have them. If you're not sure, that's fine — say so.
+
+  - type: textarea
+    id: existing-adapter-bug
+    attributes:
+      label: If this is about an existing (already-supported) host being wrong
+      description: Which path is wrong, and what should it be instead? See docs/host-support-matrix.md for current status — several adapters are marked best-effort and welcome exactly this kind of correction.

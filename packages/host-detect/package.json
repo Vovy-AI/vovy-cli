@@ -1,0 +1,21 @@
+{
+  "name": "@vovy/host-detect",
+  "version": "0.1.0",
+  "description": "Per-host detection and safe config writing for Vovy: Claude Code, Codex CLI, Cursor, Cline, Windsurf.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --clean",
+    "dev": "tsup src/index.ts --format esm --dts --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

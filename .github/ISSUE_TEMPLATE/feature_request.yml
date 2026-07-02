@@ -1,0 +1,26 @@
+name: Feature request
+description: Suggest something Vovy should do
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Especially useful if you're a non-technical founder — describe what you were trying to do, not just the feature you're imagining.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like Vovy to do instead?
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        Note: Vovy's one hard constraint is that it never runs its own AI model or holds its
+        own API keys/billing — everything has to work using the model you already pay for
+        inside your existing coding tool. Proposals that would require a Vovy-hosted backend
+        are unlikely to be accepted for that reason, however useful they'd otherwise be.
