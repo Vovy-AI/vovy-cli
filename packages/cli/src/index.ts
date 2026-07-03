@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import { realpathSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { ADAPTERS, type SkillScope } from "@vovy-ai/host-detect";
 import { runDoctor } from "./commands/doctor.js";
@@ -165,7 +167,20 @@ async function main() {
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// npm/npx always launch a package's bin through a symlink (node_modules/.bin/<name>).
+// import.meta.url resolves through that symlink to the file's real path, while
+// process.argv[1] stays as the symlink path — a plain string comparison never matches,
+// silently skipping main() for every real-world invocation. Resolve both to their real
+// path before comparing.
+function isMainModule(): boolean {
+  try {
+    return realpathSync(fileURLToPath(import.meta.url)) === realpathSync(process.argv[1] ?? "");
+  } catch {
+    return false;
+  }
+}
+
+if (isMainModule()) {
   main().catch((error) => {
     console.error(`vovy: ${error instanceof Error ? error.message : String(error)}`);
     process.exitCode = 1;
