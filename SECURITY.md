@@ -2,12 +2,12 @@
 
 ## What Vovy touches on your machine
 
-`vovy install` writes files in exactly two places, and only inside your detected AI coding tool's own config directories:
+`vibez install` writes files in exactly two places, and only inside your detected AI coding tool's own config directories:
 
 1. **Skill files** — plain markdown, no executable code — into your tool's native skill/rules directory (e.g. `~/.claude/skills/`, `.agents/skills/`, `.cursor/rules/`).
 2. **One MCP server registration entry** (`vovy`, running `npx -y @vovy-ai/mcp-server`) into your tool's MCP config file (e.g. `.mcp.json`, `~/.codex/config.toml`).
 
-Every other key already in those files is left untouched — `vovy install` and `vovy uninstall` only ever create, update, or remove the specific entries they own. Run `vovy install --dry-run` at any time to see exactly what would change before anything is written, and `vovy doctor` to check current status without changing anything.
+Every other key already in those files is left untouched — `vibez install` and `vibez uninstall` only ever create, update, or remove the specific entries they own. Run `vibez install --dry-run` at any time to see exactly what would change before anything is written, and `vibez doctor` to check current status without changing anything.
 
 ## What Vovy never does
 
@@ -16,7 +16,7 @@ Every other key already in those files is left untouched — `vovy install` and 
 
 ## Reporting a vulnerability
 
-If you find a security issue in Vovy itself (e.g. a way `vovy install`/`uninstall` could write outside its intended scope, or corrupt a config file it doesn't own), please open a GitHub issue. For anything you'd rather not disclose publicly before a fix ships, contact a maintainer directly rather than filing a public issue.
+If you find a security issue in Vovy itself (e.g. a way `vibez install`/`uninstall` could write outside its intended scope, or corrupt a config file it doesn't own), please open a GitHub issue. For anything you'd rather not disclose publicly before a fix ships, contact a maintainer directly rather than filing a public issue.
 
 ## A note on what Vovy is *for*
 

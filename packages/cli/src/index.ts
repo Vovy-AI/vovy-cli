@@ -6,12 +6,12 @@ import { runInstall } from "./commands/install.js";
 import { runUninstall } from "./commands/uninstall.js";
 import { realEnv } from "./env.js";
 
-const HELP = `vovy — free, forever, drop-in skills for vibe coding safely.
+const HELP = `Vovy — free, forever, drop-in skills for vibe coding safely. Installed as \`vibez\`.
 
 Usage:
-  vovy install [options]     Write Vovy's skills into detected (or specified) host tools
-  vovy doctor [options]      Check whether Vovy is correctly installed, without changing anything
-  vovy uninstall [options]   Remove everything Vovy's installer wrote
+  vibez install [options]     Write Vovy's skills into detected (or specified) host tools
+  vibez doctor [options]      Check whether Vovy is correctly installed, without changing anything
+  vibez uninstall [options]   Remove everything Vovy's installer wrote
 
 Options:
   --host <ids>       Comma-separated host ids to target instead of auto-detecting.
@@ -103,7 +103,7 @@ function cmdDoctor(argv: string[]) {
   let allHealthy = true;
   for (const { adapter, entries, mcp, healthy } of reports) {
     allHealthy &&= healthy;
-    console.log(`\n${adapter.label}: ${healthy ? "OK" : "needs `vovy install`"}`);
+    console.log(`\n${adapter.label}: ${healthy ? "OK" : "needs `vibez install`"}`);
     for (const e of entries) {
       console.log(`  [${e.status === "ok" ? "x" : " "}] ${e.skillId} (${e.status})`);
     }
@@ -167,7 +167,7 @@ async function main() {
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch((error) => {
-    console.error(`vovy: ${error instanceof Error ? error.message : String(error)}`);
+    console.error(`vibez: ${error instanceof Error ? error.message : String(error)}`);
     process.exitCode = 1;
   });
 }

@@ -3,7 +3,7 @@ export interface SkillMeta {
   id: string;
   /** Human-readable title. */
   title: string;
-  /** One-line summary of what the skill does, shown in `vovy install` output and docs. */
+  /** One-line summary of what the skill does, shown in `vibez install` output and docs. */
   summary: string;
 }
 

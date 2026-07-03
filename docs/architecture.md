@@ -13,7 +13,7 @@ MCP has a `sampling/createMessage` primitive that, on paper, does exactly what w
 
 ## What Vovy actually does instead
 
-Every target host independently converged on a markdown-file convention its own agent loop reads for free: `SKILL.md` for Claude Code and Codex CLI (the shared open "Agent Skills" format), `.mdc` rules for Cursor, flat rule files for Cline and Windsurf. `vovy install` writes Vovy's skills directly into whichever of these directories the detected host uses. This is the **primary** delivery mechanism — zero protocol dependency, works today, on every host, using a feature each vendor already built and maintains for their own reasons.
+Every target host independently converged on a markdown-file convention its own agent loop reads for free: `SKILL.md` for Claude Code and Codex CLI (the shared open "Agent Skills" format), `.mdc` rules for Cursor, flat rule files for Cline and Windsurf. `vibez install` writes Vovy's skills directly into whichever of these directories the detected host uses. This is the **primary** delivery mechanism — zero protocol dependency, works today, on every host, using a feature each vendor already built and maintains for their own reasons.
 
 The same content is *also* served by `@vovy-ai/mcp-server` as MCP `prompts` and `resources` (`skill://<id>`) — both still-stable, non-deprecated MCP primitives — as a **secondary**, redundant path for any host with good MCP-prompt discovery UX. Nothing depends on this path working.
 
@@ -26,7 +26,7 @@ packages/
 ├── skills/          @vovy-ai/skills       — SKILL.md content + typed manifest (single source of truth)
 ├── host-detect/     @vovy-ai/host-detect  — HostAdapter interface + per-host detect/write logic
 ├── mcp-server/       @vovy-ai/mcp-server   — MCP server (stdio); serves analyze_project + prompts/resources
-└── cli/               vovy               — `npx vovy install|doctor|uninstall`
+└── cli/               vibez              — `npx vibez install|doctor|uninstall`
 ```
 
 `@vovy-ai/skills` has zero runtime dependencies and is the actual product content; both `cli` and `mcp-server` import it so the two delivery paths can never drift apart. `@vovy-ai/host-detect` isolates the highest-blast-radius code — writing into other tools' config directories inside `$HOME` — behind a small `HostAdapter` interface, and is the main extension point for adding new hosts (see [`host-support-matrix.md`](host-support-matrix.md) and [`../CONTRIBUTING.md`](../CONTRIBUTING.md)).
