@@ -8,3 +8,8 @@ coverage/
 .env.*
 !.env.example
 .claude/
+scripts/distill-guides/.extracted/
+scripts/distill-guides/.source-copy/
+# Guides feature paused — see conversation. Never auto-commit this even if a future
+# session forgets the context; must be a deliberate decision, not an accidental `git add -A`.
+packages/skills/guides/
