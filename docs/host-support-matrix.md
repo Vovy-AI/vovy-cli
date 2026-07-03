@@ -8,7 +8,7 @@
 | **Cline** | `.clinerules/<id>.md` | ⚠️ Best effort | — | ❌ Not implemented — MCP config location varies by VS Code install and wasn't confirmed. Skill file alone is enough for Cline's agent loop. |
 | **Windsurf** | `.windsurf/rules/<id>.md` | ⚠️ Best effort | `~/.codeium/windsurf/mcp_config.json` | ⚠️ Best effort |
 
-`detect()` for Cline always returns `false` — there's no reliable filesystem signal that Cline (a VS Code extension) is installed, so it's only ever targeted via `vibez install --host cline`, never silently.
+`detect()` for Cline always returns `false` — there's no reliable filesystem signal that Cline (a VS Code extension) is installed, so it's only ever targeted via `npx @vovy-ai/go install --host cline`, never silently.
 
 ## Confirming or fixing a path
 

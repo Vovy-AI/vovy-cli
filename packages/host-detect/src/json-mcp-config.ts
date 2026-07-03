@@ -18,7 +18,7 @@ export function mergeJsonMcpConfig(existing: string | undefined, entry: McpServe
       }
     } catch {
       throw new Error(
-        "Existing MCP config is not valid JSON — refusing to overwrite it. Please fix or remove it and re-run `vibez install`.",
+        "Existing MCP config is not valid JSON — refusing to overwrite it. Please fix or remove it and re-run `npx @vovy-ai/go install`.",
       );
     }
   }

@@ -44,13 +44,13 @@ Skill content lives in `packages/skills/skills/<id>/SKILL.md`. The `description`
 
 ## Testing conventions
 
-- **Never touch the real `$HOME` or `cwd` in a test.** `@vovy-ai/host-detect` and `vibez` both take an explicit `DetectEnv` parameter everywhere specifically so tests can redirect it — use the `tmpEnv()` helper (`src/test-utils.ts` in each package) which creates a throwaway directory under `os.tmpdir()` and cleans it up after the test.
+- **Never touch the real `$HOME` or `cwd` in a test.** `@vovy-ai/host-detect` and `@vovy-ai/go` both take an explicit `DetectEnv` parameter everywhere specifically so tests can redirect it — use the `tmpEnv()` helper (`src/test-utils.ts` in each package) which creates a throwaway directory under `os.tmpdir()` and cleans it up after the test.
 - Prefer testing through the public exported functions (`runInstall`, `runDoctor`, `runUninstall`, adapter methods) over reaching into private internals.
 
 ## Pull requests
 
 - Run `pnpm ci` before opening a PR.
-- Add a changeset (`pnpm changeset`) for any change to a published package (`@vovy-ai/*` or `vibez`) — this drives the changelog and version bump on release.
+- Add a changeset (`pnpm changeset`) for any change to a published package (`@vovy-ai/*`) — this drives the changelog and version bump on release.
 - Keep PRs scoped to one adapter/skill/fix where possible; it makes review faster and the changeset more meaningful.
 
 ## Code of conduct
