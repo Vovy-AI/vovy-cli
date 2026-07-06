@@ -1,0 +1,4 @@
+# Force LF everywhere regardless of platform checkout settings — without this, a
+# Windows checkout gets CRLF and Biome's formatter (LF-only) flags every single file,
+# which is exactly what was failing Windows CI before this file existed.
+* text=auto eol=lf
