@@ -7,6 +7,7 @@ You normally don't install this directly. `npx @vovy-ai/go install` registers it
 ## What it does
 
 - **`analyze_project`** — a deterministic, non-LLM tool: reads `package.json` and the local file tree to report detected framework/stack, package manager, test runner, and a few concrete security footguns (like an untracked `.env`). No network access, no guessing, no AI involved.
+- **`search_codebase`** — deterministic, tree-sitter-backed symbol search over JS/TS/JSX/TSX via [`@vovy-ai/context-engine`](https://www.npmjs.com/package/@vovy-ai/context-engine): find a symbol's declaration, its usages, or a file's top-level structure, without reading whole files. No embeddings, no network access.
 - Serves the same skill content [`@vovy-ai/skills`](https://www.npmjs.com/package/@vovy-ai/skills) ships as MCP prompts and resources (`skill://<id>`) — a secondary, redundant discovery path alongside the skill files `vovy install` already writes directly into your tool's native skill directory.
 
 Like the rest of Vovy, this never calls a hosted API or runs its own AI model — it's a local, offline analysis tool.

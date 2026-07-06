@@ -15,19 +15,20 @@ npx @vovy-ai/go uninstall    # remove everything Vovy wrote, cleanly
 
 Installed globally (`npm i -g @vovy-ai/go`), the command is just `vovy`.
 
-## Why this is free, forever
+`npx @vovy-ai/go doctor` also reports a deterministic "always-on token footprint" — every installed skill file plus every registered MCP tool definition, the tokens a session pays whether or not any of it ever fires.
 
-Vovy never runs its own AI model and never calls a Vovy-hosted server. It only writes markdown skill files that your existing AI coding tool reads for free, using the model you already pay for. No account, no API key, no cost, ever.
+It's MIT-licensed and runs entirely on your machine — no account, no API key, nothing phoning home.
 
 ## What it installs
 
-Three skills that make AI coding assistants safer and better-scoped for non-technical founders:
+Four skills plus a local MCP server that give AI coding assistants deterministic project context and safety rails:
 
 | Skill | What it does |
 |---|---|
 | **Prompt Rescoper** | Rewrites vague, oversized requests into a small, reviewable spec before any code is written. |
 | **Project Skill Drafter** | Analyzes your actual project and drafts a project-specific skill so future requests already know your stack. |
 | **Founder Explainer** | Explains destructive/high-stakes actions in plain English before they happen, and flags common vibe-coding security mistakes. |
+| **Context Scoper** | Calls a tree-sitter-backed Context Engine to find the exact symbol or file before reading whole files — fewer tokens spent, fewer same-named false matches. |
 
 Full docs, architecture, and source: **[github.com/Vovy-AI/vovy-cli](https://github.com/Vovy-AI/vovy-cli)**
 

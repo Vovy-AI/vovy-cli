@@ -11,6 +11,7 @@ You normally don't install this directly — run `npx @vovy-ai/go install` inste
 | **Prompt Rescoper** | Rewrites vague, oversized requests into a small, reviewable spec before any code is written. |
 | **Project Skill Drafter** | Analyzes your actual project and drafts a project-specific skill so future requests already know your stack. |
 | **Founder Explainer** | Explains destructive/high-stakes actions in plain English before they happen, and flags common vibe-coding security mistakes. |
+| **Context Scoper** | Calls the `search_codebase` MCP tool ([`@vovy-ai/context-engine`](https://www.npmjs.com/package/@vovy-ai/context-engine)) to find the exact symbol or file before reading whole files. |
 
 Full docs: **[github.com/Vovy-AI/vovy-cli](https://github.com/Vovy-AI/vovy-cli)**
 
