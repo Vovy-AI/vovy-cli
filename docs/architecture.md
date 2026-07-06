@@ -32,6 +32,34 @@ packages/
 
 `@vovy-ai/skills` has zero runtime dependencies and is the actual product content; both `cli` and `mcp-server` import it so the two delivery paths can never drift apart. `@vovy-ai/host-detect` isolates the highest-blast-radius code — writing into other tools' config directories inside `$HOME` — behind a small `HostAdapter` interface, and is the main extension point for adding new hosts (see [`host-support-matrix.md`](host-support-matrix.md) and [`../CONTRIBUTING.md`](../CONTRIBUTING.md)).
 
+## Install flow
+
+What `npx @vovy-ai/go install` actually does, end to end — every step below is a plain function call and a filesystem write, nothing hosted:
+
+```mermaid
+sequenceDiagram
+    participant You
+    participant CLI as @vovy-ai/go
+    participant HD as @vovy-ai/host-detect
+    participant Skills as @vovy-ai/skills
+    participant FS as Your filesystem
+
+    You->>CLI: npx @vovy-ai/go install
+    CLI->>HD: resolveTargets(env)
+    HD-->>CLI: detected host adapters (e.g. Claude Code)
+    CLI->>Skills: getAllSkills()
+    Skills-->>CLI: SKILL.md content (4 skills)
+    loop for each detected host
+        CLI->>HD: writeSkillFile(adapter, skill)
+        HD->>FS: write ~/.claude/skills/<id>/SKILL.md
+        CLI->>HD: writeMcpConfig(adapter, vovy entry)
+        HD->>FS: merge ~/.claude/mcp.json (idempotent — never touches another tool's entries)
+    end
+    CLI-->>You: report of what was created / updated / already up to date
+```
+
+`npx @vovy-ai/go doctor` re-runs this same resolution in dry-run mode (see `runInstall({ dryRun: true })` in `packages/cli/src/commands/doctor.ts`) so "would this change anything" and "is this actually installed" can never drift into two separate, inconsistent code paths.
+
 ## Context Engine (v0.2 Phase 1)
 
 `@vovy-ai/context-engine` is the first real substance behind what used to be a one-line "v0.2+: LSP-based retrieval in the spirit of Serena" aspiration. It answers "where is X handled" / "what calls this function" style questions via [tree-sitter](https://tree-sitter.github.io/tree-sitter/), not embeddings and not a real language server (yet — see Roadmap below), which keeps it deterministic, dependency-light, and consistent with `analyze_project`'s no-LLM/no-network ethos:
@@ -41,6 +69,53 @@ packages/
 - **API**: `getSymbolsOverview`, `findSymbol`, `findReferencingSymbols`, `searchPattern` — naming borrowed from Serena's own symbol-tool taxonomy. Exposed to hosts as one consolidated MCP tool, `search_codebase` (an `action` enum, not four separate tools — every registered tool definition is token overhead paid every session whether or not it's called, so fewer/richer tool definitions is a cost-saving choice in itself, not just a style preference).
 - **Honest limitation**: identifier-boundary-aware (matches real tree-sitter tokens, never a substring inside a string/comment — a real improvement over grep), but **not** scope/type-aware like a real language server. Two unrelated symbols sharing a name in different scopes both surface in `find_symbol`/`find_references` results. Closing that gap is exactly what Phase 2's real LSP backends are for.
 - **`context-scoper`** (`packages/skills/skills/context-scoper/`) is the skill that instructs the host model to call `search_codebase` before reading whole files — the actual "better tool-calling via semantic search" behavior, not just a tool sitting unused. See `scripts/eval-context-engine/RESULTS.md` for an early, honestly-scoped, reproducible measurement of the token difference this makes.
+
+```mermaid
+flowchart TD
+    A["search_codebase MCP tool<br/>(packages/mcp-server/src/tools/search-codebase.ts)"]
+    A -->|action: overview| B[getSymbolsOverview]
+    A -->|action: find_symbol| C[findSymbol]
+    A -->|action: find_references| D[findReferencingSymbols]
+    A -->|action: pattern| E[searchPattern]
+
+    B --> P["parser.ts<br/>parseFile(): grammar registry + in-process cache keyed by mtime"]
+    C --> P
+    D --> P
+    P --> G{file extension}
+    G -->|.js .jsx .mjs .cjs| GJ[javascript.wasm]
+    G -->|.ts .mts .cts| GT[typescript.wasm]
+    G -->|.tsx| GX[tsx.wasm]
+
+    B --> S["symbols.ts<br/>walks top-level declarations"]
+    C --> S
+    D --> S
+    S -->|"function_declaration, class_declaration,<br/>interface_declaration, type_alias_declaration,<br/>exported variable_declarator"| Out1[SymbolInfo]
+    D -->|"identifier / type_identifier nodes,<br/>excluding each symbol's own declaration site"| Out2[ReferenceInfo]
+    E --> W["walk.ts + search-pattern.ts<br/>plain regex/text fallback,<br/>skips node_modules/.git/dist/.next/..."]
+```
+
+### Tool-call flow, end to end
+
+A concrete trace of what happens when `context-scoper` fires on a real question:
+
+```mermaid
+sequenceDiagram
+    participant You
+    participant Host as Host tool (e.g. Claude Code)
+    participant Skill as context-scoper SKILL.md
+    participant MCP as @vovy-ai/mcp-server
+    participant CE as @vovy-ai/context-engine
+
+    You->>Host: "where is writeSkillFile implemented?"
+    Host->>Skill: description matches this question -> skill body loads
+    Skill-->>Host: "call search_codebase before reading whole files"
+    Host->>MCP: search_codebase({action: "find_symbol", query: "writeSkillFile"})
+    MCP->>CE: findSymbol("writeSkillFile", root)
+    CE->>CE: parse changed files only (cache hit if unchanged since last call)
+    CE-->>MCP: [{file, kind: "function", startLine, endLine}]
+    MCP-->>Host: JSON result — a symbol signature and line range, not a whole file
+    Host-->>You: answer, having read one function instead of one whole file
+```
 
 ## Cost transparency
 
@@ -56,7 +131,5 @@ packages/
 - **Model-tier routing / response caching / tool-output compression** (RouteLLM/GPTCache/LLMLingua-style techniques) — still no hosted endpoint, still local-only if built, just not started yet.
 - **Persistent/vector-based fuzzy search index** — Phase 1's in-process cache only survives one process lifetime; nothing persists across separate CLI/MCP-server invocations yet.
 - **Curated skill registry / distribution trust layer.**
-
-**Explicitly a different, separate tier — not part of the free-forever core, and not scoped into any current work:** team/org skill sync (a shared "vovy account" letting a company publish one brand skill every employee's install references, plus visibility into who's prompting how much). This needs a real backend, auth, and usage telemetry — all three things the free-forever core deliberately rules out (see "The hard constraint" above). If built, it would be an explicit opt-in layer on top of the always-free local core, not a bend of this document's constraint.
 
 **Still true, and still a deliberate choice, not an oversight:** no telemetry of any kind in the free-forever core — a telemetry backend implies infrastructure cost, which contradicts the free-forever constraint.
