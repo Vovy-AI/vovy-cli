@@ -38,6 +38,16 @@ This is the single highest-value contribution to Vovy, and the main reason `@vov
 
 If you're fixing or confirming an existing best-effort adapter (see `docs/host-support-matrix.md` for the current list), the same steps apply minus step 4.
 
+## Adding a language to the Context Engine
+
+`@vovy-ai/context-engine` (see `docs/architecture.md`'s "Context Engine" section) currently understands JS/TS/JSX/TSX only, via tree-sitter WASM grammars. Adding a language:
+
+1. Confirm a prebuilt WASM grammar exists for it in the `tree-sitter-wasms` bundle (`npx tree-sitter-wasms` won't help — check `unpkg.com/browse/tree-sitter-wasms@latest/out/` for the full list) or another WASM source. Native-binding-only grammar packages (most `tree-sitter-<lang>` npm packages ship `.node` prebuilds, not `.wasm`) don't work here — see the comment at the top of `packages/context-engine/src/parser.ts` for why WASM-only matters.
+2. Add the grammar name to `GRAMMARS` in `packages/context-engine/scripts/copy-wasm-grammars.mjs` and to `GRAMMAR_BY_EXTENSION` in `packages/context-engine/src/parser.ts` (map every relevant file extension to it).
+3. Add the language's declaration node-type names (function/class/interface/etc.) to `DECLARATION_KIND_BY_NODE_TYPE` in `packages/context-engine/src/symbols.ts` — these are stable, documented names in that language's own tree-sitter grammar, not something to guess at. Dump a fixture file's parse tree (`tree.rootNode.toString()`) if you're not sure what a given grammar calls things.
+4. Add a fixture under `packages/context-engine/test/fixtures/` and extend `symbols.test.ts` the same way the existing JS/TS fixture is tested.
+5. Update the language list in `docs/architecture.md`'s Context Engine section.
+
 ## Editing a skill
 
 Skill content lives in `packages/skills/skills/<id>/SKILL.md`. The `description` field in the YAML frontmatter is what the host model reads to decide whether to trigger the skill — per Anthropic's own Agent Skills guidance, models tend to under-trigger skills, so keep descriptions assertive and keyword-dense rather than vague. Run `pnpm --filter @vovy-ai/skills test` after editing to make sure frontmatter still parses.

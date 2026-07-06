@@ -95,7 +95,7 @@ function cmdDoctor(argv: string[]) {
   if (flags.help) return console.log(HELP);
 
   const env = realEnv();
-  const reports = runDoctor(env, flags.hosts, flags.scope);
+  const { reports, tokenFootprint } = runDoctor(env, flags.hosts, flags.scope);
 
   if (reports.length === 0) {
     console.log("No supported host tools detected on this machine — nothing to check.");
@@ -113,6 +113,9 @@ function cmdDoctor(argv: string[]) {
       console.log(`  [${mcp.status === "ok" ? "x" : " "}] mcp server (${mcp.status})`);
     }
   }
+  console.log(
+    `\nEstimated always-on token footprint: ~${tokenFootprint.totalEstTokens} tokens (${tokenFootprint.skillCount} skill files ~${tokenFootprint.skillsEstTokens}, ${tokenFootprint.toolCount} MCP tool definitions ~${tokenFootprint.toolsEstTokens}) — what every session pays whether or not a skill fires. chars/4 estimate, not an exact tokenizer count.`,
+  );
   process.exitCode = allHealthy ? 0 : 1;
 }
 

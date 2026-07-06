@@ -34,7 +34,7 @@ describe("install / doctor / uninstall lifecycle", () => {
       args: ["-y", "@vovy-ai/mcp-server"],
     });
 
-    const doctorReports = runDoctor(t.env, hosts, "user");
+    const { reports: doctorReports } = runDoctor(t.env, hosts, "user");
     expect(doctorReports).toHaveLength(1);
     expect(doctorReports[0]?.healthy).toBe(true);
 

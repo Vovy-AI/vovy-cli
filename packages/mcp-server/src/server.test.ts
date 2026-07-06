@@ -24,9 +24,11 @@ describe("Vovy MCP server", () => {
     client = await connectedClient();
   });
 
-  it("lists the analyze_project tool", async () => {
+  it("lists every tool in TOOL_DEFINITIONS", async () => {
     const { tools } = await client.listTools();
-    expect(tools.map((t) => t.name)).toContain("analyze_project");
+    const names = tools.map((t) => t.name);
+    expect(names).toContain("analyze_project");
+    expect(names).toContain("search_codebase");
   });
 
   it("exposes every manifest skill as both a prompt and a skill:// resource", async () => {

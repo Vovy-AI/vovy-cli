@@ -7,6 +7,10 @@ import { createServer } from "./server.js";
 export { createServer, SERVER_NAME, SERVER_VERSION } from "./server.js";
 export { analyzeProject } from "./tools/analyze-project.js";
 export type { ProjectAnalysis } from "./tools/analyze-project.js";
+export { searchCodebase } from "./tools/search-codebase.js";
+export type { SearchCodebaseAction, SearchCodebaseInput } from "./tools/search-codebase.js";
+export { TOOL_DEFINITIONS } from "./tools/definitions.js";
+export type { ToolDefinition } from "./tools/definitions.js";
 
 async function main() {
   const server = createServer();

@@ -1,0 +1,72 @@
+[
+  {
+    "id": "claude-code-skill-path",
+    "question": "Where does host detection decide the Claude Code skill file path?",
+    "naiveFiles": ["packages/host-detect/src/adapters/claude-code.ts"],
+    "action": "find_symbol",
+    "query": "claudeCodeAdapter"
+  },
+  {
+    "id": "resolve-targets",
+    "question": "How does the CLI decide which host adapters to target for an install?",
+    "naiveFiles": ["packages/cli/src/targets.ts"],
+    "action": "find_symbol",
+    "query": "resolveTargets"
+  },
+  {
+    "id": "write-skill-file",
+    "question": "Where is a skill file's actual write-to-disk logic?",
+    "naiveFiles": ["packages/host-detect/src/write.ts"],
+    "action": "find_symbol",
+    "query": "writeSkillFile"
+  },
+  {
+    "id": "merge-mcp-config",
+    "question": "How does merging a new MCP server entry into an existing JSON config file work, without clobbering other tools already configured there?",
+    "naiveFiles": ["packages/host-detect/src/json-mcp-config.ts"],
+    "action": "find_symbol",
+    "query": "mergeJsonMcpConfig"
+  },
+  {
+    "id": "analyze-project",
+    "question": "Where does static, non-AI project analysis (framework/package-manager/test-runner detection) actually happen?",
+    "naiveFiles": ["packages/mcp-server/src/tools/analyze-project.ts"],
+    "action": "find_symbol",
+    "query": "analyzeProject"
+  },
+  {
+    "id": "token-footprint",
+    "question": "How does the doctor command compute its token-footprint estimate?",
+    "naiveFiles": ["packages/cli/src/commands/doctor.ts"],
+    "action": "find_symbol",
+    "query": "computeTokenFootprint"
+  },
+  {
+    "id": "load-skill",
+    "question": "Where does the CLI load a skill's raw markdown content and look up its file path within the skills package?",
+    "naiveFiles": ["packages/skills/src/load.ts"],
+    "action": "find_symbol",
+    "query": "loadSkill"
+  },
+  {
+    "id": "doctor-entry-shape",
+    "question": "What's the shape of a completed vs pending vs stale doctor entry?",
+    "naiveFiles": ["packages/cli/src/commands/doctor.ts"],
+    "action": "find_symbol",
+    "query": "DoctorEntry"
+  },
+  {
+    "id": "run-uninstall",
+    "question": "Where is uninstall's core logic that removes skill files and the MCP entry?",
+    "naiveFiles": ["packages/cli/src/commands/uninstall.ts"],
+    "action": "find_symbol",
+    "query": "runUninstall"
+  },
+  {
+    "id": "search-codebase-overview",
+    "question": "What top-level symbols does the search_codebase tool wrapper file define?",
+    "naiveFiles": ["packages/mcp-server/src/tools/search-codebase.ts"],
+    "action": "overview",
+    "filePath": "packages/mcp-server/src/tools/search-codebase.ts"
+  }
+]

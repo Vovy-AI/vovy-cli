@@ -1,0 +1,26 @@
+{
+  "name": "@vovy-ai/context-engine",
+  "version": "0.1.0",
+  "description": "Vovy's Context Engine — deterministic, zero-LLM symbol search over a project via tree-sitter WASM (no native build, no network calls). Phase 1 of the semantic-search roadmap in docs/architecture.md.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist", "wasm"],
+  "scripts": {
+    "prebuild": "node scripts/copy-wasm-grammars.mjs",
+    "build": "pnpm run prebuild && tsup src/index.ts --format esm --dts --clean",
+    "dev": "tsup src/index.ts --format esm --dts --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "pnpm run prebuild && vitest run"
+  },
+  "dependencies": {
+    "web-tree-sitter": "^0.20.8"
+  },
+  "devDependencies": {
+    "tree-sitter-wasms": "^0.1.13",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

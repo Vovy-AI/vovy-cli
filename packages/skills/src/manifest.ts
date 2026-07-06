@@ -24,4 +24,10 @@ export const SKILL_MANIFEST: SkillMeta[] = [
     summary:
       "Explains high-stakes or destructive actions in plain English before they happen, and flags common vibe-coding security foot-guns.",
   },
+  {
+    id: "context-scoper",
+    title: "Context Scoper",
+    summary:
+      "Finds the exact symbol or file via tree-sitter-backed search before reading whole files, cutting tokens spent and avoiding same-named false matches.",
+  },
 ];
