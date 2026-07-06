@@ -18,6 +18,7 @@
     "test": "turbo run test",
     "ci": "turbo run lint typecheck test build",
     "changeset": "changeset",
+    "version": "changeset version && biome check --write .",
     "release": "turbo run build && changeset publish"
   },
   "devDependencies": {
