@@ -1,12 +1,15 @@
 {
   "name": "@vovy-ai/skills",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Vovy's skill content — SKILL.md files and a typed manifest, the single source of truth consumed by the CLI installer and the MCP server.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist", "skills"],
+  "files": [
+    "dist",
+    "skills"
+  ],
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts --clean",
     "dev": "tsup src/index.ts --format esm --dts --watch",
