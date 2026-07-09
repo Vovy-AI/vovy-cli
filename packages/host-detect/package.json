@@ -1,6 +1,6 @@
 {
   "name": "@vovy-ai/host-detect",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Per-host detection and safe config writing for Vovy: Claude Code, Codex CLI, Cursor, Cline, Windsurf.",
   "license": "MIT",
   "type": "module",
