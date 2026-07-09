@@ -1,6 +1,6 @@
 # Vovy CLI
 
-Vovy CLI gives Claude Code, Codex CLI, Cursor, Cline, and Windsurf a small, focused set of skills plus a local MCP server: it scopes vague requests down to something reviewable before any code gets written, finds the exact file or function a request is actually about instead of reading whole files to guess, and explains destructive or high-stakes changes in plain English before they run. It's useful whether you've been shipping code for years or started vibe coding last week — the failure modes it catches (scope creep, wasted context, unreviewed destructive changes) hit both.
+Vovy CLI gives Claude Code, Codex CLI, Cursor, Cline, and Windsurf a small, focused set of skills plus a local MCP server: it scopes vague requests down to something reviewable before any code gets written, finds the exact file or function a request is actually about instead of reading whole files to guess, explains destructive or high-stakes changes in plain English before they run, and remembers your project's decisions, mistakes, and constraints in git so no session — and no tool — starts from zero. It's useful whether you've been shipping code for years or started vibe coding last week — the failure modes it catches (scope creep, wasted context, unreviewed destructive changes, re-litigated decisions) hit both.
 
 It's MIT-licensed and runs entirely on your machine — no account, no API key, nothing phoning home. That's table stakes for a tool that touches your codebase, not the pitch; see [How it works](#how-it-works-for-the-curious) for the actual reason it's built that way.
 
@@ -32,14 +32,15 @@ Then it builds *that*, and before anything destructive or high-stakes happens (d
 
 It also finds the right file before touching it, instead of reading whole files to guess: a deterministic Context Engine (no embeddings, no AI call involved) locates the exact function, method, class, or usage site a request is actually about, so the model reads only what's relevant. When your project has TypeScript, it resolves symbols through the real type checker, so two functions sharing a name in different scopes don't get confused for each other; otherwise it falls back to tree-sitter and says so. See [Early performance results](#early-performance-results) for what that's worth in practice.
 
-Vovy ships four skills today:
+Vovy ships five skills today:
 
 | Skill | What it does |
 |---|---|
-| **Prompt Rescoper** | Rewrites vague, oversized requests into a small, reviewable spec before any code is written. |
+| **Prompt Rescoper** | Rewrites vague, oversized requests into a small, reviewable spec — including how the change will be verified and what imperfections are acceptable — before any code is written. |
 | **Project Skill Drafter** | Analyzes your actual project (via a deterministic, non-AI tool call — no guessing) and drafts a project-specific skill so future requests already know your stack. |
 | **Founder Explainer** | Explains destructive/high-stakes actions in plain English before they happen, and flags common vibe-coding security mistakes. |
-| **Context Scoper** | Calls the Context Engine to find the exact symbol or file before reading whole files — fewer tokens spent, fewer same-named false matches. |
+| **Context Scoper** | Calls the Context Engine to find the exact symbol, method, or file before reading whole files — fewer tokens spent, fewer same-named false matches, plus transitive "what breaks if I change this" impact analysis. |
+| **Memory Keeper** | Records your project's decisions (with what was rejected and why), mistakes (with how to avoid repeating them), and constraints (with the why) into `.vovy/memory/` — plain markdown, committed to git, so the rationale travels with `git clone` to every machine, teammate, and AI tool. No account, no server: git *is* the sync. |
 
 Every skill above also works as a typeable command inside Claude Code once installed — `/prompt-rescoper`, `/context-scoper`, and so on. That's a Claude Code platform feature (skills and slash commands are the same mechanism), not something Vovy has to build or maintain separately.
 
