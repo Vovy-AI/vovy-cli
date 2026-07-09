@@ -23,4 +23,4 @@ Reading whole files to find one function, or grepping for a name and hoping the 
 
 ## Why this matters
 
-This is the concrete "better tool-calling via semantic search" half of Vovy's cost story: fewer, more targeted file reads mean fewer tokens spent per request and a lower chance of editing the wrong same-named thing. Nothing here is a hosted service or a model call — `search_codebase` is deterministic tree-sitter parsing, same free-forever ethos as `analyze_project`.
+This is the concrete "better tool-calling via semantic search" half of Vovy's cost story: fewer, more targeted file reads mean fewer tokens spent per request and a lower chance of editing the wrong same-named thing. Nothing here is a hosted service or a model call — `search_codebase` resolves symbols deterministically through the project's own TypeScript or a bundled tree-sitter parser, same free-forever ethos as `analyze_project`.

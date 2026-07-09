@@ -9,7 +9,7 @@ import { buildStatusline } from "./commands/statusline.js";
 import { runUninstall } from "./commands/uninstall.js";
 import { realEnv } from "./env.js";
 
-const HELP = `Vovy — free, forever, drop-in skills for vibe coding safely. Run via \`npx @vovy-ai/go\` (or \`vovy\` if installed globally).
+const HELP = `Vovy — drop-in skills for vibe coding safely with the AI tool you already use. Run via \`npx @vovy-ai/go\` (or \`vovy\` if installed globally).
 
 Usage:
   npx @vovy-ai/go install [options]     Write Vovy's skills into detected (or specified) host tools
