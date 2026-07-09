@@ -6,4 +6,5 @@ Read an entry's file for the full rationale.
 - **decision** [TypeScript compiler API for scope-aware search, not external language servers](decisions/typescript-compiler-api-for-scope-aware-search-not-external-.md) — 2026-07-09
 - **mistake** [doctor's MCP tool metadata mirror drifted twice in one day](mistakes/doctor-s-mcp-tool-metadata-mirror-drifted-twice-in-one-day.md) — 2026-07-09
 - **mistake** [Test fixture names silently corrupted benchmark ground truth](mistakes/test-fixture-names-silently-corrupted-benchmark-ground-truth.md) — 2026-07-09
+- **mistake** [TypeScript backend paths broke on Windows — TS normalizes to forward slashes](mistakes/typescript-backend-paths-broke-on-windows-ts-normalizes-to-f.md) — 2026-07-09
 - **constraint** [Free-forever core: no servers, no LLM inference, no native modules](constraints/free-forever-core-no-servers-no-llm-inference-no-native-modu.md) — 2026-07-09
