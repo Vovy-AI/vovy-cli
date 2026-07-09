@@ -1,0 +1,63 @@
+[
+  { "prompt": "build me a signup page with google login", "expected": "prompt-rescoper" },
+  { "prompt": "can you make the dashboard show revenue by month", "expected": "prompt-rescoper" },
+  {
+    "prompt": "I want users to be able to upload a profile picture",
+    "expected": "prompt-rescoper"
+  },
+  { "prompt": "add a dark mode toggle", "expected": "prompt-rescoper" },
+  { "prompt": "set up stripe checkout", "expected": "prompt-rescoper" },
+  { "prompt": "implement password reset", "expected": "prompt-rescoper" },
+
+  { "prompt": "where is the login handler defined", "expected": "context-scoper" },
+  { "prompt": "what calls sendEmail", "expected": "context-scoper" },
+  { "prompt": "is it safe to change the signature of createUser", "expected": "context-scoper" },
+  { "prompt": "which file defines the User type", "expected": "context-scoper" },
+  { "prompt": "how does the checkout flow work", "expected": "context-scoper" },
+  { "prompt": "who uses this helper before I rename it", "expected": "context-scoper" },
+
+  { "prompt": "what did that just do", "expected": "founder-explainer" },
+  { "prompt": "delete the old migrations folder", "expected": "founder-explainer" },
+  { "prompt": "deploy to production now", "expected": "founder-explainer" },
+  { "prompt": "drop table sessions", "expected": "founder-explainer" },
+  { "prompt": "force push my branch", "expected": "founder-explainer" },
+  { "prompt": "how do I delete a user account safely", "expected": "founder-explainer" },
+
+  { "prompt": "learn this codebase", "expected": "project-skill-drafter" },
+  { "prompt": "remember how this project works", "expected": "project-skill-drafter" },
+  { "prompt": "generate a project skill for this repo", "expected": "project-skill-drafter" },
+
+  {
+    "prompt": "remember this: we picked supabase over firebase for pricing",
+    "expected": "memory-keeper"
+  },
+  { "prompt": "why did we switch off stripe checkout", "expected": "memory-keeper" },
+  { "prompt": "have we tried server-side rendering here before", "expected": "memory-keeper" },
+  { "prompt": "that broke last time too, don't do that again", "expected": "memory-keeper" },
+
+  { "prompt": "what is the weather in Paris", "expected": null },
+  { "prompt": "thanks, that worked", "expected": null },
+  { "prompt": "who won the world cup", "expected": null },
+  { "prompt": "write me a haiku", "expected": null },
+
+  {
+    "prompt": "where do I add a new route",
+    "expected": "context-scoper",
+    "hard": "A location question phrased with 'add a'. The literal phrase belongs to prompt-rescoper, the intent belongs to context-scoper."
+  },
+  {
+    "prompt": "make the delete button red",
+    "expected": "prompt-rescoper",
+    "hard": "'delete' here is UI copy, not a destructive action. A bare keyword cannot tell the difference."
+  },
+  {
+    "prompt": "explain what this deploy script does",
+    "expected": "founder-explainer",
+    "hard": "Asks for an explanation of a high-stakes script without using any trigger phrase verbatim."
+  },
+  {
+    "prompt": "clean up the unused imports in this file",
+    "expected": null,
+    "hard": "A small mechanical edit that needs no skill. Should stay silent rather than reach for prompt-rescoper."
+  }
+]

@@ -5,6 +5,7 @@ import { parseArgs } from "node:util";
 import { ADAPTERS, type SkillScope } from "@vovy-ai/host-detect";
 import { runDoctor } from "./commands/doctor.js";
 import { runInstall } from "./commands/install.js";
+import { buildStatusline } from "./commands/statusline.js";
 import { runUninstall } from "./commands/uninstall.js";
 import { realEnv } from "./env.js";
 
@@ -14,6 +15,7 @@ Usage:
   npx @vovy-ai/go install [options]     Write Vovy's skills into detected (or specified) host tools
   npx @vovy-ai/go doctor [options]      Check whether Vovy is correctly installed, without changing anything
   npx @vovy-ai/go uninstall [options]   Remove everything Vovy's installer wrote
+  npx @vovy-ai/go statusline            One-line status for a host's status bar (engine, skills, memory)
 
 Options:
   --host <ids>       Comma-separated host ids to target instead of auto-detecting.
@@ -88,6 +90,19 @@ function cmdInstall(argv: string[]) {
       ? "\nDry run only — nothing was written. Re-run without --dry-run to apply."
       : "\nDone. Vovy's skills are now available in your tool(s) above.",
   );
+
+  // Purely visual, strictly opt-in, and only relevant to the one host that has a status
+  // bar — never write settings.json for the founder, just show the snippet.
+  if (!flags.dryRun && reports.some((r) => r.adapter.id === "claude-code")) {
+    console.log(
+      `\nOptional: a Vovy status-bar badge for Claude Code (shows engine + memory at a glance).\nAdd to ~/.claude/settings.json:\n  "statusLine": { "type": "command", "command": "npx -y @vovy-ai/go statusline" }\n(Faster variant: npm i -g @vovy-ai/go, then use "vovy statusline" as the command.)`,
+    );
+  }
+}
+
+function cmdStatusline() {
+  // No flags: this runs on every status-bar refresh and must stay dumb and fast.
+  console.log(buildStatusline(realEnv()));
 }
 
 function cmdDoctor(argv: string[]) {
@@ -95,7 +110,7 @@ function cmdDoctor(argv: string[]) {
   if (flags.help) return console.log(HELP);
 
   const env = realEnv();
-  const { reports, tokenFootprint } = runDoctor(env, flags.hosts, flags.scope);
+  const { reports, tokenFootprint, contextBackend } = runDoctor(env, flags.hosts, flags.scope);
 
   if (reports.length === 0) {
     console.log("No supported host tools detected on this machine — nothing to check.");
@@ -113,6 +128,9 @@ function cmdDoctor(argv: string[]) {
       console.log(`  [${mcp.status === "ok" ? "x" : " "}] mcp server (${mcp.status})`);
     }
   }
+  console.log(
+    `\nsearch_codebase backend for this directory: ${contextBackend.backend} (${contextBackend.reason})`,
+  );
   console.log(
     `\nEstimated always-on token footprint: ~${tokenFootprint.totalEstTokens} tokens (${tokenFootprint.skillCount} skill files ~${tokenFootprint.skillsEstTokens}, ${tokenFootprint.toolCount} MCP tool definitions ~${tokenFootprint.toolsEstTokens}) — what every session pays whether or not a skill fires. chars/4 estimate, not an exact tokenizer count.`,
   );
@@ -159,6 +177,8 @@ async function main() {
       return cmdDoctor(rest);
     case "uninstall":
       return cmdUninstall(rest);
+    case "statusline":
+      return cmdStatusline();
     case "--help":
     case "-h":
     case undefined:

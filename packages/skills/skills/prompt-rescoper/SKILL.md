@@ -34,9 +34,13 @@ Size the rescoped spec to the request, not to a fixed template:
 > **Goal:** [one sentence]
 > **Building now:** [the smallest useful slice — numbered if more than one piece]
 > **Not doing yet:** [explicitly deferred pieces]
+> **How we'll verify:** [the concrete check that proves this worked — a flow to click through, a command to run, a state to observe. Not "it works": the specific falsifier that would catch it NOT working]
+> **Acceptable imperfections:** [only when relevant — known rough edges this pass deliberately tolerates, so nobody burns time polishing past the point of usefulness]
 > **Assuming:** [only if something genuinely blocking is ambiguous, or something you're inferring rather than have verified]
 
 Then proceed straight into the work — don't wait for a reply unless you asked a blocking question.
+
+**"How we'll verify" is not optional on the full spec.** A task without a falsifier produces plausible-but-unverified work — the check is what turns "done" from a feeling into a fact, and it's the single most valuable line for whoever (human or AI) picks the task up. "Acceptable imperfections" is its counterweight: without explicit permission to stop, the default is to chase 100% and overfit the letter of the spec at the product's expense.
 
 ## What this intentionally does not do
 

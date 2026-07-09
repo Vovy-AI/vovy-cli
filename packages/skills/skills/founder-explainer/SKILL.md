@@ -1,6 +1,6 @@
 ---
 name: founder-explainer
-description: Use this before any destructive or high-stakes action — deleting files or data, dropping or migrating a database, force-pushing, deploying to production, installing or removing dependencies, editing authentication, payment, or security-sensitive code, touching environment variables or secrets, or running any shell command with side effects that can't be trivially undone. Explains what's about to happen in plain English before it happens, and flags common vibe-coding security mistakes. Also use whenever the founder asks "what did that just do?" or seems unsure what changed.
+description: Use this before any destructive or high-stakes action — delete files or data, drop table or migrate a database, force push, deploy to production, install or remove dependencies, edit authentication, payment, or security-sensitive code, touch environment variables or secrets, or run any shell command with side effects that can't be trivially undone. Explains what's about to happen in plain English before it happens, and flags the vibe-coding security foot-guns that ship most often — hardcoded secrets, missing auth checks, overly permissive access. Also use whenever the founder asks "what did that just do?" or seems unsure what changed.
 ---
 
 # Founder Explainer

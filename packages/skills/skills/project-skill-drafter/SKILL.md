@@ -1,6 +1,6 @@
 ---
 name: project-skill-drafter
-description: Use this the first time you work in a project that has no project-level skill or CLAUDE.md yet, or whenever the founder says something like "learn this codebase", "set up vovy for this project", "generate a project skill", or "remember how this project works". Analyzes the project's actual stack and structure and drafts a tailored project-specific skill file, so future requests in this project automatically come with the right context without the founder having to explain the stack every time.
+description: Use this the first time you work in a project that has no project-level skill or CLAUDE.md yet, or whenever the founder says something like "learn this codebase", "set up vovy for this project", "generate a project skill", or "remember how this project works". Analyzes this {{PROJECT}} project's actual stack and structure and drafts a tailored project-specific skill file, so future requests in this project automatically come with the right context without the founder having to explain the stack every time.
 ---
 
 # Project Skill Drafter
@@ -16,6 +16,7 @@ Generic advice is worse than no advice — a skill that says "use good practices
    - How to install, run, test, and build
    - Where things live (a few key directories, not a full file tree)
    - Project-specific conventions actually observed in the code (naming, folder patterns, state management approach) — only include what you actually saw, don't invent conventions
+   - **Constraints with their why**, never bare rules. "Don't use native modules" invites a future session to relitigate it; "don't use native modules — installs must work on machines with no compiler" transfers the judgment to cases nobody anticipated. If `.vovy/memory/` exists in the repo, fold its `constraint` entries in here (or point to them) instead of restating rules from scratch — that's where the why already lives.
    - Anything that looked like a footgun worth flagging (secrets in version control, missing `.env.example`, etc.) — pair this with the Founder Explainer skill's guidance rather than duplicating it
 4. **Show the draft to the founder before writing it** if a project skill file already exists — don't silently overwrite prior context someone may have hand-edited. If none exists yet, it's safe to create it directly.
 5. **Keep it short.** A project skill file that's too long won't get fully read by the host's context budget on every turn. Prefer a tight, high-signal file over an exhaustive one — this mirrors why Agent Skills load progressively in the first place.

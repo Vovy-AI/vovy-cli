@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import type { ProjectContext } from "./context.js";
+import { contextualize } from "./contextualize.js";
 import type { LoadedSkill, SkillMeta } from "./types.js";
 
 // dist/load.js -> ../skills  (and src/load.ts -> ../skills, same relative shape in dev)
@@ -35,9 +37,15 @@ function parseFrontmatter(raw: string): { name: string; description: string; bod
   return { name: fields.name, description: fields.description, body: (body ?? "").trim() };
 }
 
-export function loadSkill(meta: SkillMeta): LoadedSkill {
+/**
+ * Reads a skill from disk and substitutes `{{PROJECT}}` for `context`'s detected stack
+ * before parsing, so `description`, `body`, and `raw` all agree. Omit `context` to get the
+ * generic wording — correct for a user-scoped install, which applies to every project on
+ * the machine rather than the one Vovy happens to be run from.
+ */
+export function loadSkill(meta: SkillMeta, context?: ProjectContext): LoadedSkill {
   const sourcePath = skillPath(meta.id);
-  const raw = readFileSync(sourcePath, "utf8");
+  const raw = contextualize(readFileSync(sourcePath, "utf8"), context);
   const { name, description, body } = parseFrontmatter(raw);
   return { ...meta, name, description, body, raw, sourcePath };
 }

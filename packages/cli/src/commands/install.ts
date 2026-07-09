@@ -6,7 +6,7 @@ import {
   writeMcpConfig,
   writeSkillFile,
 } from "@vovy-ai/host-detect";
-import { getAllSkills } from "@vovy-ai/skills";
+import { detectProjectContext, getAllSkills } from "@vovy-ai/skills";
 import { resolveTargets } from "../targets.js";
 
 export interface InstallOptions {
@@ -30,7 +30,13 @@ const VOVY_MCP_ENTRY = { id: "vovy", command: "npx", args: ["-y", "@vovy-ai/mcp-
 export function runInstall(opts: InstallOptions): InstallReport[] {
   const scope = opts.scope ?? "user";
   const targets = resolveTargets(opts.env, opts.hosts);
-  const skills = getAllSkills();
+
+  // A project-scoped skill lives in one repo and may name that repo's stack, which makes
+  // its description match the founder's own words more often. A user-scoped skill applies
+  // to every project on the machine, so it must stay generic — naming the stack of
+  // whichever directory `install` happened to run in would be actively wrong everywhere
+  // else.
+  const skills = getAllSkills(scope === "project" ? detectProjectContext(opts.env.cwd) : undefined);
 
   return targets.map((adapter) => {
     const skillResults = skills.map((skill) => ({
