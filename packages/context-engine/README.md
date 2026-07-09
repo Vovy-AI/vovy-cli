@@ -1,6 +1,6 @@
 # @vovy-ai/context-engine
 
-Deterministic, non-LLM symbol search for [Vovy](https://github.com/Vovy-AI/vovy-cli) — a free, forever, drop-in skill pack for vibe coding safely with AI coding assistants.
+Deterministic, non-LLM symbol search for [Vovy](https://github.com/Vovy-AI/vovy-cli) — a drop-in skill pack for vibe coding safely with AI coding assistants. Free forever, MIT, local-only.
 
 You normally don't install this directly — it's what powers the `search_codebase` tool served by `@vovy-ai/mcp-server` once you run `npx @vovy-ai/go install`. It answers "where is X declared" / "what references X" / "is it safe to change X" questions directly, instead of an agent guessing a filename or grepping blind. No embeddings, no network calls, no LLM.
 
