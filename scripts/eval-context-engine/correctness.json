@@ -1,0 +1,85 @@
+[
+  {
+    "id": "refs-detect",
+    "question": "What calls an adapter's detect() method?",
+    "action": "find_references",
+    "query": "detect",
+    "groundTruth": [
+      "packages/cli/src/targets.ts",
+      "packages/host-detect/src/adapters/claude-code.test.ts"
+    ],
+    "verified": "Hand-checked 2026-07-09: every `detect` token in packages/ is either a declaration (the HostAdapter interface member plus one method per adapter), prose in a comment, or part of the unrelated identifiers DetectEnv/host-detect. The only true usages are `adapter.detect(env)` in targets.ts and two `claudeCodeAdapter.detect(t.env)` assertions in claude-code.test.ts. targets.ts is in a different package from the declaration, so it only resolves once workspace source paths are mapped.",
+    "tests": "cross-package resolution, and method usages that the pre-Phase-2 engine reported as an empty array"
+  },
+  {
+    "id": "refs-mergeMcpConfig",
+    "question": "Where is an adapter's mergeMcpConfig actually called?",
+    "action": "find_references",
+    "query": "mergeMcpConfig",
+    "groundTruth": [
+      "packages/host-detect/src/write.ts",
+      "packages/host-detect/src/adapters/codex.test.ts"
+    ],
+    "verified": "Hand-checked 2026-07-09: one call in write.ts, seven in codex.test.ts. The three `mergeMcpConfig: mergeJsonMcpConfig` lines in claude-code/cursor/windsurf are declarations written as property assignments, not usages, and the cline/codex `mergeMcpConfig(...) {}` methods are declarations written as methods.",
+    "tests": "declarations spelled as property assignments rather than methods are excluded from references"
+  },
+  {
+    "id": "refs-skillFilePath-grep-trap",
+    "question": "What calls skillFilePath?",
+    "action": "find_references",
+    "query": "skillFilePath",
+    "groundTruth": [
+      "packages/host-detect/src/write.ts",
+      "packages/host-detect/src/adapters/claude-code.test.ts",
+      "packages/cli/src/commands/uninstall.ts"
+    ],
+    "grepAlsoMatches": ["packages/context-engine/src/backends/tree-sitter.ts"],
+    "verified": "Hand-checked 2026-07-09: real usages are write.ts:25, claude-code.test.ts:27-28, uninstall.ts:38. `skillFilePath` also appears inside a doc comment in context-engine/src/backends/tree-sitter.ts:61 — a plain grep reports that file, both symbol backends must not.",
+    "tests": "identifier tokens vs. text inside a comment"
+  },
+  {
+    "id": "attribution-toSymbolInfo",
+    "question": "Two module-private functions named toSymbolInfo exist in different files. Which usage belongs to which?",
+    "action": "find_references",
+    "query": "toSymbolInfo",
+    "groundTruth": [
+      "packages/context-engine/src/backends/tree-sitter.ts",
+      "packages/context-engine/src/backends/typescript.ts"
+    ],
+    "expectedAttribution": {
+      "packages/context-engine/src/backends/tree-sitter.ts": "packages/context-engine/src/backends/tree-sitter.ts",
+      "packages/context-engine/src/backends/typescript.ts": "packages/context-engine/src/backends/typescript.ts"
+    },
+    "verified": "Hand-checked 2026-07-09: each file declares its own module-private `toSymbolInfo` and calls only its own. Neither is exported. A name-matching engine returns both usages and cannot say which declaration either belongs to.",
+    "tests": "scope-aware attribution — the gap Phase 2 exists to close"
+  },
+  {
+    "id": "attribution-normalize",
+    "question": "Two functions named normalize exist in different files. Which usage belongs to which?",
+    "action": "find_references",
+    "query": "normalize",
+    "groundTruth": ["packages/skills/src/triggers.ts", "packages/skills/src/index.test.ts"],
+    "expectedAttribution": {
+      "packages/skills/src/triggers.ts": "packages/skills/src/triggers.ts",
+      "packages/skills/src/index.test.ts": "packages/skills/src/index.test.ts"
+    },
+    "verified": "Hand-checked 2026-07-09: triggers.ts declares a module-private `normalize` and calls it; index.test.ts declares its own copy so the test compares like with like. Neither is exported, and neither calls the other's.",
+    "tests": "scope-aware attribution across package-internal files"
+  },
+  {
+    "id": "decls-detect",
+    "question": "Where is detect declared?",
+    "action": "find_symbol",
+    "query": "detect",
+    "groundTruth": [
+      "packages/host-detect/src/types.ts",
+      "packages/host-detect/src/adapters/claude-code.ts",
+      "packages/host-detect/src/adapters/cline.ts",
+      "packages/host-detect/src/adapters/codex.ts",
+      "packages/host-detect/src/adapters/cursor.ts",
+      "packages/host-detect/src/adapters/windsurf.ts"
+    ],
+    "verified": "Hand-checked 2026-07-09: the HostAdapter interface member plus one object-literal method per adapter. Before Phase 2's recall fix, `find_symbol` indexed only top-level declarations and returned none of these.",
+    "tests": "recall on object-literal methods and interface members"
+  }
+]

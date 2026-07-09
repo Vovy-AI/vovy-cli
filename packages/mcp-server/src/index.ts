@@ -9,6 +9,10 @@ export { analyzeProject } from "./tools/analyze-project.js";
 export type { ProjectAnalysis } from "./tools/analyze-project.js";
 export { searchCodebase } from "./tools/search-codebase.js";
 export type { SearchCodebaseAction, SearchCodebaseInput } from "./tools/search-codebase.js";
+export { projectMemory } from "./tools/project-memory.js";
+export type { ProjectMemoryAction, ProjectMemoryInput } from "./tools/project-memory.js";
+export { listMemory, recallMemory, recordMemory } from "./memory/store.js";
+export type { MemoryEntry, MemoryType, RecallMatch } from "./memory/store.js";
 export { TOOL_DEFINITIONS } from "./tools/definitions.js";
 export type { ToolDefinition } from "./tools/definitions.js";
 

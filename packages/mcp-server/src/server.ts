@@ -1,5 +1,5 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { getAllSkills } from "@vovy-ai/skills";
+import { detectProjectContext, getAllSkills } from "@vovy-ai/skills";
 import { TOOL_DEFINITIONS } from "./tools/definitions.js";
 
 export const SERVER_NAME = "vovy";
@@ -13,7 +13,7 @@ export const SERVER_VERSION = "0.1.0";
  * into the host's native skill directory. This is a redundant, secondary discovery path;
  * nothing depends on it working.
  */
-export function createServer(): McpServer {
+export function createServer(cwd: string = process.cwd()): McpServer {
   const server = new McpServer({ name: SERVER_NAME, version: SERVER_VERSION });
 
   for (const tool of TOOL_DEFINITIONS) {
@@ -24,7 +24,9 @@ export function createServer(): McpServer {
     );
   }
 
-  for (const skill of getAllSkills()) {
+  // Unlike a user-scoped skill file, an MCP server runs inside one project, so its prompt
+  // and resource descriptions can safely name that project's stack.
+  for (const skill of getAllSkills(detectProjectContext(cwd))) {
     server.registerPrompt(
       skill.id,
       {

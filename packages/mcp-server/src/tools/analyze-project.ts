@@ -49,6 +49,7 @@ const IGNORED_TOP_LEVEL_DIRS = new Set([
   ".next",
   "coverage",
   ".cache",
+  ".vovy",
 ]);
 
 function detectPackageManager(root: string): ProjectAnalysis["packageManager"] {

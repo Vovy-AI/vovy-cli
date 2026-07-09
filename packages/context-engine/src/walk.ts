@@ -14,6 +14,9 @@ const IGNORED_DIRS = new Set([
   ".next",
   "coverage",
   ".cache",
+  // Vovy's own project memory (see @vovy-ai/mcp-server's project_memory tool) — recall is
+  // the intended read path, not symbol search or pattern grep.
+  ".vovy",
 ]);
 
 /** Extensions the tree-sitter symbol layer understands (see `parser.ts`'s grammar registry). */

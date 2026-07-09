@@ -1,3 +1,5 @@
+import { createRequire } from "node:module";
+import { join } from "node:path";
 import type { DetectEnv, HostAdapter, SkillScope } from "@vovy-ai/host-detect";
 import { getAllSkills } from "@vovy-ai/skills";
 import { runInstall } from "./install.js";
@@ -8,9 +10,11 @@ import { runInstall } from "./install.js";
  * depending on `@vovy-ai/mcp-server` would pull the MCP SDK + zod (~10MB combined) into
  * every `npx @vovy-ai/go` invocation just to read three short strings, which cuts directly
  * against the zero-friction/free-forever pitch this token-footprint feature exists to
- * support. If you add or edit a tool's name/title/description there, update this list too.
+ * support. If you add or edit a tool's name/title/description there, update this list too —
+ * `doctor.test.ts` compares the two byte-for-byte via a dev-only workspace dependency, so
+ * drift fails the build instead of silently under-counting the token footprint.
  */
-const MCP_TOOL_METADATA = [
+export const MCP_TOOL_METADATA = [
   {
     name: "analyze_project",
     title: "Analyze Project",
@@ -21,7 +25,13 @@ const MCP_TOOL_METADATA = [
     name: "search_codebase",
     title: "Search Codebase",
     description:
-      'Deterministic, non-LLM symbol search over a JS/TS/JSX/TSX project via tree-sitter (no embeddings, no network access). Use this BEFORE reading whole files to answer a \'where is X handled\' / \'how does Y work\' question — it finds the exact symbol or file first so you read only what\'s relevant, not entire files. Actions: "overview" (top-level functions/classes/interfaces/exports in one file, needs filePath), "find_symbol" (declaration sites of a name across the project, needs query), "find_references" (identifier-boundary-aware usage sites of a name — more precise than grep since it never matches inside a string/comment, needs query), "pattern" (plain regex/text search fallback for non-code content, needs query).',
+      'Deterministic, non-LLM symbol search over a JS/TS/JSX/TSX project (no embeddings, no network access). Use this BEFORE reading whole files to answer a \'where is X handled\' / \'what calls Y\' / \'is it safe to change Z\' question — it finds the exact symbol, method, or file first, so you read one function instead of one whole file. Covers class methods, interface members, and object-literal methods, not just top-level declarations. Actions: "overview" (declarations and their members in one file, needs filePath), "find_symbol" (declaration sites of a name across the project, needs query), "find_references" (usage sites of a name, excluding declarations, needs query), "impact" (transitive blast radius: who references this symbol, who references THOSE callers, and so on, depth-tagged — the \'what breaks if I change this\' answer; needs query, optional maxDepth default 3), "pattern" (plain regex/text search fallback for non-code content, needs query). Every response names the `backend` that answered: "typescript" means results were resolved through the real type checker and each reference carries the declaration it resolves to; "tree-sitter" means results are identifier-name matches (never inside a string or comment, unlike grep) that cannot distinguish two same-named symbols in different scopes — treat those as candidates, not proof, and treat "impact" tails as over-approximate.',
+  },
+  {
+    name: "project_memory",
+    title: "Project Memory",
+    description:
+      'Records and recalls this project\'s decisions, mistakes, and constraints as plain markdown under .vovy/memory/, committed to git — so rationale survives across sessions, tools, and teammates with no server or account. Actions: "record" (save an entry; needs type: "decision" | "mistake" | "constraint", title, body — for decisions include what was REJECTED and why, for mistakes include why it happened and how to avoid it, for constraints include the why behind the rule), "recall" (deterministic keyword search over saved entries; needs query — use BEFORE starting non-trivial work and before revisiting any past choice), "list" (every entry\'s title and type, no bodies). Never pass secrets, API keys, or passwords in a body — entries are committed to git, and record refuses content that looks like a credential.',
   },
 ];
 
@@ -76,9 +86,51 @@ function computeTokenFootprint(): TokenFootprint {
   };
 }
 
+export interface ContextBackendProbe {
+  backend: "typescript" | "tree-sitter";
+  /** One founder-readable sentence saying why, and what it means for result quality. */
+  reason: string;
+}
+
+/**
+ * Which Context Engine backend `search_codebase` will use for the project at `cwd`.
+ *
+ * Mirrors `@vovy-ai/context-engine`'s own selection rule (the project's resolved
+ * `typescript`, with `VOVY_CONTEXT_BACKEND=tree-sitter` as the escape hatch) without
+ * importing the package — pulling its WASM grammar bundle into every `npx @vovy-ai/go`
+ * run just to answer a yes/no question cuts against the zero-friction pitch, the same
+ * reasoning as `MCP_TOOL_METADATA` above. One honest caveat: the engine also gives
+ * TypeScript a second chance to resolve from next to its own install; this probe only
+ * checks the project's, which is the resolution that matters in practice.
+ */
+export function probeContextBackend(cwd: string): ContextBackendProbe {
+  if (process.env.VOVY_CONTEXT_BACKEND === "tree-sitter") {
+    return {
+      backend: "tree-sitter",
+      reason:
+        "forced by VOVY_CONTEXT_BACKEND — name-matching only, unset to restore scope-aware search",
+    };
+  }
+  try {
+    createRequire(join(cwd, "package.json")).resolve("typescript");
+    return {
+      backend: "typescript",
+      reason:
+        "this project's own TypeScript — scope-aware, references name the declaration they resolve to",
+    };
+  } catch {
+    return {
+      backend: "tree-sitter",
+      reason:
+        "no typescript resolvable from this project — name matches only; `npm i -D typescript` upgrades search_codebase to scope-aware results",
+    };
+  }
+}
+
 export interface DoctorResult {
   reports: DoctorReport[];
   tokenFootprint: TokenFootprint;
+  contextBackend: ContextBackendProbe;
 }
 
 /** Read-only health check: reuses `runInstall`'s dry-run mode so "would this change
@@ -112,5 +164,9 @@ export function runDoctor(env: DetectEnv, hosts?: string[], scope?: SkillScope):
     };
   });
 
-  return { reports, tokenFootprint: computeTokenFootprint() };
+  return {
+    reports,
+    tokenFootprint: computeTokenFootprint(),
+    contextBackend: probeContextBackend(env.cwd),
+  };
 }
