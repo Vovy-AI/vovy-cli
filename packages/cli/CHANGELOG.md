@@ -1,5 +1,28 @@
 # @vovy-ai/go
 
+## 0.3.0
+
+### Minor Changes
+
+- 8a8f765: Context Engine Phase 2: scope-aware symbol resolution, plus member-level recall.
+
+  `@vovy-ai/context-engine` now resolves symbols through a `SymbolBackend` seam with two implementations. When a project has TypeScript resolvable from its root — nearly every JS/TS project does — `search_codebase` drives `ts.LanguageService` in-process against the project's _own_ `typescript` install, giving real scope- and type-aware resolution: two functions sharing a name in different scopes stay distinct, and every reference carries the declaration it resolves to. `typescript` is never a declared runtime dependency; projects without it fall back to the existing tree-sitter backend. Every `search_codebase` response now reports which backend answered, so a name match is never mistaken for a resolved one.
+
+  Fixes a silent correctness bug in the process. Both backends previously indexed only top-level declarations, so `getSymbolsOverview` on a file whose export is an object literal returned one symbol and nothing about its methods, and `find_references` on any method or property name returned an empty array — indistinguishable from "no references exist". Both backends now index class methods, interface members, and object-literal methods with their containing symbol. The TypeScript backend additionally maps workspace packages to their source entry points, without which cross-package references in a monorepo resolve through built `.d.ts` files and vanish.
+
+  Skills gain structured `triggers` metadata (phrases, keywords, anti-phrases) that is checked against each skill's own description at test time, so the two cannot drift apart, and a `{{PROJECT}}` placeholder that `install --scope project` and the MCP server substitute for the detected stack — a description naming Next.js matches a founder's Next.js question more often, at zero extra tokens. User-scoped installs deliberately keep the generic wording, since they apply to every project on the machine.
+
+  `search_codebase` gains an `impact` action: transitive blast radius ("what breaks if I change this") as a depth-tagged BFS over reference edges, out to an optional `maxDepth` (default 3). The walk continues through any named declaration — a symbol exposed as an object-literal property walks on through the property to its callers rather than dead-ending at module level. `doctor` now also reports which Context Engine backend the current directory gets (`typescript` vs `tree-sitter`) and how to upgrade, and its MCP tool metadata mirror is now enforced byte-for-byte against `@vovy-ai/mcp-server`'s shipped definitions by a test, after drifting twice during development.
+
+  New `project_memory` MCP tool + `memory-keeper` skill: decisions (with rejected alternatives), mistakes (with how to avoid them), and constraints (with the why) recorded as plain markdown under `.vovy/memory/`, committed to git — rationale that survives across sessions, machines, teammates, and AI tools with no server or account. Recall is deterministic keyword scoring (no embeddings — computing them is inference, which the free-forever constraint rules out), and `record` refuses credential-shaped content since entries are committed to git. The `prompt-rescoper` spec template gains required "How we'll verify" and "Acceptable imperfections" lines, and `project-skill-drafter` now writes constraints with their why. `npx @vovy-ai/go statusline` prints a one-line status-bar badge (engine, skill health, memory count); the installer shows the opt-in Claude Code snippet without ever editing settings itself.
+
+  Three reproducible, zero-cost benchmarks ship alongside: `scripts/eval-context-engine` scores both backends and a grep baseline against hand-verified ground truth (also catching an overview regression that listed function-body locals and made one query cost more than reading the file), `scripts/eval-context-engine/latency.mjs` measures cold-start vs warm-query latency, and `scripts/eval-skill-routing` measures whether the trigger conditions separate the skills. All carry explicit disclaimers about what they do and do not measure.
+
+### Patch Changes
+
+- Updated dependencies [8a8f765]
+  - @vovy-ai/skills@0.4.0
+
 ## 0.2.1
 
 ### Patch Changes

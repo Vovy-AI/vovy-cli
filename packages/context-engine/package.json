@@ -1,6 +1,6 @@
 {
   "name": "@vovy-ai/context-engine",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Vovy's Context Engine — deterministic, zero-LLM symbol search over a project via tree-sitter WASM (no native build, no network calls). Phase 1 of the semantic-search roadmap in docs/architecture.md.",
   "license": "MIT",
   "type": "module",
