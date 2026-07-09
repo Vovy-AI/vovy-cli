@@ -1,6 +1,6 @@
 {
   "name": "@vovy-ai/mcp-server",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Vovy's MCP server — deterministic project-analysis tools plus the same skill content served as MCP prompts/resources.",
   "license": "MIT",
   "type": "module",

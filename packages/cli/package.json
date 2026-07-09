@@ -1,6 +1,6 @@
 {
   "name": "@vovy-ai/go",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Free, forever, drop-in MCP server + skill pack that teaches non-technical founders to vibe code safely. npx @vovy-ai/go install",
   "keywords": [
     "vibe-coding",
