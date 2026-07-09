@@ -115,12 +115,28 @@ function createLanguageService(ts: TypeScriptModule, root: string): TS.LanguageS
   return ts.createLanguageService(host, ts.createDocumentRegistry());
 }
 
+/**
+ * TypeScript normalizes every file name to forward slashes internally, on all platforms.
+ * On Windows that made `isProjectFile` (comparing against a backslash `root + sep`) reject
+ * every declaration, so `find_symbol` returned `[]` — caught by the Windows CI matrix, not
+ * locally. Comparisons happen in TypeScript's format; anything *returned* to callers goes
+ * back through `toNativePath` so both backends emit paths in the platform's own format.
+ */
+function toForwardSlashes(path: string): string {
+  return path.replace(/\\/g, "/");
+}
+
+function toNativePath(path: string): string {
+  return sep === "/" ? path : path.replace(/\//g, sep);
+}
+
 /** `.d.ts` and anything under node_modules is machinery, not the founder's own code. */
 function isProjectFile(root: string, fileName: string): boolean {
+  const normalized = toForwardSlashes(fileName);
   return (
-    fileName.startsWith(root + sep) &&
-    !fileName.includes(`${sep}node_modules${sep}`) &&
-    !fileName.endsWith(".d.ts")
+    normalized.startsWith(`${toForwardSlashes(root)}/`) &&
+    !normalized.includes("/node_modules/") &&
+    !normalized.endsWith(".d.ts")
   );
 }
 
@@ -308,7 +324,7 @@ function toSymbolInfo(
     name: item.name,
     kind: symbolKindFor(item.kind),
     exported: item.kindModifiers.split(",").includes("export"),
-    file: sourceFile.fileName,
+    file: toNativePath(sourceFile.fileName),
     startLine: lineOf(ts, sourceFile, item.textSpan.start),
     endLine: lineOf(ts, sourceFile, item.textSpan.start + item.textSpan.length),
   };
@@ -446,10 +462,10 @@ export function createTypeScriptBackend(ts: TypeScriptModule, root: string): Sym
           seen.add(key);
 
           results.push({
-            file: reference.fileName,
+            file: toNativePath(reference.fileName),
             line,
             column,
-            declaration: { file: item.fileName, startLine: declarationStartLine },
+            declaration: { file: toNativePath(item.fileName), startLine: declarationStartLine },
           });
         }
       }
@@ -494,7 +510,7 @@ export function createTypeScriptBackend(ts: TypeScriptModule, root: string): Sym
             const caller = enclosingNamedDeclaration(ts, sourceFile, reference.textSpan.start);
             results.push({
               symbol: caller?.name ?? "<module>",
-              file: reference.fileName,
+              file: toNativePath(reference.fileName),
               line: lineOf(ts, sourceFile, reference.textSpan.start),
               depth,
             });
