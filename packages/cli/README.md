@@ -1,6 +1,6 @@
 # @vovy-ai/go
 
-Free, forever, drop-in skills for vibe coding safely — the `vovy` CLI installer.
+The `vovy` CLI — one command drops project-aware skills, scope-aware code search, and git-committed project memory into the AI coding tool you already use. Free forever.
 
 ```
 npx @vovy-ai/go install

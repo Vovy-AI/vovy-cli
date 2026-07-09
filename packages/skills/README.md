@@ -1,6 +1,6 @@
 # @vovy-ai/skills
 
-The skill content for [Vovy](https://github.com/Vovy-AI/vovy-cli) — a free, forever, drop-in skill pack for vibe coding safely with AI coding assistants.
+The skill content for [Vovy](https://github.com/Vovy-AI/vovy-cli) — a drop-in skill pack for vibe coding safely with AI coding assistants. Free forever, MIT, local-only.
 
 You normally don't install this directly — run `npx @vovy-ai/go install` instead. This package is the single source of truth for Vovy's skill content: `SKILL.md` files plus a typed manifest, consumed by both the CLI installer ([`vovy`](https://www.npmjs.com/package/@vovy-ai/go)) and the MCP server ([`@vovy-ai/mcp-server`](https://www.npmjs.com/package/@vovy-ai/mcp-server)), so the content never drifts between the two delivery paths.
 

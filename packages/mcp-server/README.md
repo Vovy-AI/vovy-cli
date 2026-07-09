@@ -1,6 +1,6 @@
 # @vovy-ai/mcp-server
 
-The MCP server component of [Vovy](https://github.com/Vovy-AI/vovy-cli) — a free, forever, drop-in skill pack for vibe coding safely with AI coding assistants.
+The MCP server component of [Vovy](https://github.com/Vovy-AI/vovy-cli) — a drop-in skill pack for vibe coding safely with AI coding assistants. Free forever, MIT, local-only.
 
 You normally don't install this directly. `npx @vovy-ai/go install` registers it automatically in your AI coding tool's MCP config (Claude Code, Codex CLI, Cursor, Cline, Windsurf), which then launches it itself via `npx -y @vovy-ai/mcp-server`.
 
