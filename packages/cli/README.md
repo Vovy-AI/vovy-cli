@@ -18,7 +18,7 @@ Installed globally (`npm i -g @vovy-ai/go`), the command is just `vovy`.
 
 `npx @vovy-ai/go doctor` also reports a deterministic "always-on token footprint" — every installed skill file plus every registered MCP tool definition, the tokens a session pays whether or not any of it ever fires — and tells you which Context Engine backend your project gets: `typescript` (scope-aware, resolved through your project's own TypeScript) or `tree-sitter` (name-matching fallback), with the one-line upgrade if you're on the fallback.
 
-It's MIT-licensed and runs entirely on your machine — no account, no API key, nothing phoning home.
+It's MIT-licensed and runs entirely on your machine — no account, no API key, no background telemetry. The only network call in the CLI is a one-time, two-question install survey that sends answers **only if you type them**; skip it (or set `VOVY_NO_SURVEY=1`) and nothing is ever sent.
 
 ## What it installs
 

@@ -1,13 +1,26 @@
 #!/usr/bin/env node
-import { realpathSync } from "node:fs";
+import { readFileSync, realpathSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { createInterface } from "node:readline/promises";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { ADAPTERS, type SkillScope } from "@vovy-ai/host-detect";
 import { runDoctor } from "./commands/doctor.js";
 import { runInstall } from "./commands/install.js";
 import { buildStatusline } from "./commands/statusline.js";
+import { offerSurvey, shouldOfferSurvey } from "./commands/survey.js";
 import { runUninstall } from "./commands/uninstall.js";
 import { realEnv } from "./env.js";
+
+function cliVersion(): string {
+  // dist/index.js -> ../package.json (same relative shape from src/ in dev).
+  try {
+    const pkgPath = join(dirname(fileURLToPath(import.meta.url)), "..", "package.json");
+    return JSON.parse(readFileSync(pkgPath, "utf8")).version ?? "unknown";
+  } catch {
+    return "unknown";
+  }
+}
 
 const HELP = `Vovy — drop-in skills for vibe coding safely with the AI tool you already use. Run via \`npx @vovy-ai/go\` (or \`vovy\` if installed globally).
 
@@ -59,7 +72,7 @@ function actionSymbol(action: string): string {
   return "~";
 }
 
-function cmdInstall(argv: string[]) {
+async function cmdInstall(argv: string[]) {
   const flags = parseCommonFlags(argv);
   if (flags.help) return console.log(HELP);
 
@@ -96,6 +109,14 @@ function cmdInstall(argv: string[]) {
   if (!flags.dryRun && reports.some((r) => r.adapter.id === "claude-code")) {
     console.log(
       `\nOptional: a Vovy status-bar badge for Claude Code (shows engine + memory at a glance).\nAdd to ~/.claude/settings.json:\n  "statusLine": { "type": "command", "command": "npx -y @vovy-ai/go statusline" }\n(Faster variant: npm i -g @vovy-ai/go, then use "vovy statusline" as the command.)`,
+    );
+  }
+
+  // One-time, consent-gated survey — the only network call in this CLI, and only if the
+  // user actually answers. See commands/survey.ts for the full contract.
+  if (!flags.dryRun && shouldOfferSurvey(env, process.stdout.isTTY === true)) {
+    await offerSurvey(env, cliVersion(), () =>
+      createInterface({ input: process.stdin, output: process.stdout }),
     );
   }
 }

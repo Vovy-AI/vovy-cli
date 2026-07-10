@@ -2,7 +2,7 @@
 
 Vovy CLI gives Claude Code, Codex CLI, Cursor, Cline, and Windsurf a small, focused set of skills plus a local MCP server: it scopes vague requests down to something reviewable before any code gets written, finds the exact file or function a request is actually about instead of reading whole files to guess, explains destructive or high-stakes changes in plain English before they run, and remembers your project's decisions, mistakes, and constraints in git so no session — and no tool — starts from zero. It's useful whether you've been shipping code for years or started vibe coding last week — the failure modes it catches (scope creep, wasted context, unreviewed destructive changes, re-litigated decisions) hit both.
 
-It's MIT-licensed and runs entirely on your machine — no account, no API key, nothing phoning home. That's table stakes for a tool that touches your codebase, not the pitch; see [How it works](#how-it-works-for-the-curious) for the actual reason it's built that way.
+It's MIT-licensed and runs entirely on your machine — no account, no API key, no background telemetry. The one and only network call in the whole CLI is a one-time, two-question install survey that sends your answers **only if you type them** (skipping sends zero bytes, `VOVY_NO_SURVEY=1` hides it entirely, and [the code that enforces this](packages/cli/src/commands/survey.ts) is right here to read). That's table stakes for a tool that touches your codebase, not the pitch; see [How it works](#how-it-works-for-the-curious) for the actual reason it's built that way.
 
 ## 60-second install
 
@@ -86,7 +86,7 @@ That's one side of the ledger. The other: `npx @vovy-ai/go doctor` reports Vovy'
 
 **What does this actually change on my machine?** A few markdown skill files inside your coding tool's own config directory (e.g. `~/.claude/skills/`), plus one line registering `@vovy-ai/mcp-server` in that tool's MCP config. Run `npx @vovy-ai/go install --dry-run` first to see exactly what would be written before anything happens, `npx @vovy-ai/go doctor` any time to see the real, deterministic token footprint that adds to a session, and `npx @vovy-ai/go uninstall` any time to remove it all.
 
-**Does this cost anything, or send my code anywhere?** No, and no. There are no Vovy servers to send code to, and nothing here holds an API key — it's markdown skill files your existing tool reads with the model you already pay for, plus local, deterministic tooling (static analysis, symbol resolution via your project's own TypeScript or a bundled tree-sitter parser). Normal for MIT-licensed, local-first tooling; called out explicitly here because it's the reason the architecture looks the way it does, not because it's unusual for open source.
+**Does this cost anything, or send my code anywhere?** No, and no. Your code never leaves your machine: there are no Vovy servers analyzing it, and nothing here holds an API key — it's markdown skill files your existing tool reads with the model you already pay for, plus local, deterministic tooling (static analysis, symbol resolution via your project's own TypeScript or a bundled tree-sitter parser). The single network call in the entire CLI is the optional install survey above — two answers you type yourself, or zero bytes if you skip it. Normal for MIT-licensed, local-first tooling; called out explicitly here because it's the reason the architecture looks the way it does, not because it's unusual for open source.
 
 ## How it works (for the curious)
 
